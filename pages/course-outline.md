@@ -1,6 +1,12 @@
 ## Outline for CDA classes
 
-### Class 1: intro to CDA
+26 classes over 14 weeks.
+ - 2: review, catch-up and exam in week 10
+ - 2: project presentations
+ - 1-2 catch-up
+ - 18-20 distinct lectures
+
+### Lecture 1: intro to CDA
 
  - class intro
  - Lecture: intro to CDA
@@ -16,7 +22,7 @@
     - MLE/likelihood
     - differences in CI coverage at different values of true p.
  
-### Class 2: contingency tables
+### Lecture 2: contingency tables
 
  - Lecture: contingency tables 1
     - basics of contingency tables
@@ -31,7 +37,7 @@
     - concordant/discordant pairs
     - derive relationship between OR and RR
     
-### Class 3: contingency tables
+### Lecture 3: contingency tables
 
  - Lecture: contingency tables 2
     - More on models for contingency tables
@@ -44,7 +50,7 @@
     - new delta method example
     - power/sample size for contingency tables
 
-### Class 4: GLMs
+### Lecture 4: GLMs
  
  - Lecture: Intro to GLMS
     - basic, general setup
@@ -57,7 +63,7 @@
     - other binomial models: clogit, loglog
     - fitting and optimization: IRWLS vs. Bayes
     
-### Class 5: Modeling binary outcomes (Logistic regression, CDA 5-6)
+### Lecture 5: Modeling binary outcomes (Logistic regression, CDA 5-6)
 
  - Lecture
     - details of fitting/inference for logistic model (asymptotic ML vs. Bayesian?)
@@ -72,27 +78,34 @@
     - bigglm()
 
 
-### Class 6: Modeling binary outcomes (Logistic regression and more, CDA 7)
+### Lecture 6: Modeling binary outcomes (Logistic regression and more, CDA 7)
 
  - Lecture
     - power/sample size calculation
     - conditional logistic regression/case control studies (for Cond. Logistic reg, see 11.2)
 
-### Class 7: Modeling multinomial outcomes (CDA 8)
+### Lecture 7: Modeling multinomial outcomes (CDA 8)
 
 regression (Chapter
 
-### Class 8: Poisson regression (not CDA)
+### Lecture 8: Poisson regression (not CDA)
 
-### Class 9: Poisson regression
+### Lecture 9: Poisson regression (Neg Bin, ...)
 
-### Zero-inflated models
+### Lecture 10: Zero-inflated models
 
-### Non-model based CDA (CDA 15)
+### Lecture 11: Estimation and Asymptotics (CDA 16)
 
-### Estimation and Asymptotics (CDA 16)
+### Lecture 12-13: Advanced parametric/semi-parametric modeling (smoothing, penalization)
 
-### CDA History (CDA 17)
+### Lecture 13-14: Multi-level models
+ - Random effects models
+ - LDA
+
+### Lecture 15-16: Non-model based CDA (CDA 15)
+
+
+### Lecture 17: CDA History (CDA 17)
 
 
 
