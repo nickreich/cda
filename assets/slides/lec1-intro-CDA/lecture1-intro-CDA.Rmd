@@ -1,0 +1,341 @@
+---
+title: "Intro to Categorical Data Analysis"
+author: "Nicholas Reich and Anna Liu"
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set()
+```
+
+
+ Where this course fits
+========================================================
+
+- Third course in Biostat "Methods Sequence", after intro stats and linear regression.
+- Good lead-in to random effects models, machine learning/classification models.
+- Balance of traditional stat theory and application.
+- Most applications will have biomedical/public health focus.
+
+ Focus of the course
+========================================================
+
+* Foundational concepts
+    - Analysis of contingency tables
+    - Generalized Linear Models (GLMs)
+    - Discussion of Bayesian and frequentist approaches 
+* A taste of common, modern extensions to GLMs
+    - Machine Learning classification methods
+    - Longitudinal data (repeated measures)
+    - Zero-inflated models, over-dispersion
+
+ Course Introduction
+========================================================
+
+* This course focuses on methods for categorical **response**, or **outcome** variables. 
+    - Binary, e.g.
+    - Nominal, e.g. 
+    - Ordinal, e.g.
+    - Discrete-valued ("interval"), e.g.
+* **Explanatory**, or **predictor** variables can be any type
+* Very generally, we are trying to build models 
+
+ 
+ Types of categorical variables
+========================================================
+* The way that a variable is measured determines its classification
+    - when measured as (public school, private school, home schooling), `education` is _______
+    - when measured by highest degree attained (none, high school, barchelor's,        master's, doctorate), it is _________
+    - when measured by number of years of education completed using integers (0, 1,     2, 3, ...), it is _______
+* The granularity of your data matters! 
+    - In terms of information per measured datapoint, discrete variables > ordinal variables > nominal variables
+    - This has implications for study design and sample size.
+
+ Distributions of categorical variables: Binomial
+========================================================
+Let $y_1, y_2,\cdots,y_n$ denote observations from $n$ **independent and identical** trials such that 
+$$P(Y_i=1)=\pi~~~~P(Y_i=0)=1-\pi$$
+The total number of successes (1s) $Y=\sum_{i=1}^n Y_i$ has the **binomial distribution**, denoted by $bin(n,\pi)$.
+The probability mass function for the possible outcomes $y$ for $Y$ is
+$$p(y)=\left(\begin{array}{c}n\\y\end{array}\right)\pi^y(1-\pi)^{(n-y)}, y=0,1, ..., n$$
+with $\mu=E(Y)=n\pi$ and $\sigma^2=Var(Y)=n\pi(1-\pi)$.
+
+- The binomial distribution converges to normality as $n$ increases, for fixed $\pi$, the approximation being reasonable when $n[\min(\pi, 1-\pi)]$ is as small as 5.
+- [Interactive binomial distribution](http://shiny.stat.calpoly.edu/MLE_Binomial/)
+
+ Statistical inference 
+========================================================
+Inference is the use of sample data to **estimate** unknown parameters of the population. One method we will focus on is **maximum likelihood estimation (MLE)**.
+
+\includegraphics[width=.7\linewidth]{../../slide-includes/CircleOfLife.pdf}
+
+ Statistical inference: maximum likelihood
+========================================================
+
+- The **likelihood function** is the likelihood (or probability in the discrete case) of the sample of your data $X_1,...,X_n$, given the unknown parameter(s) $\beta$. Denoted as
+$l(\beta|X_1,...,X_n)$ or simply $l(\beta)$.
+- The MLE of $\beta$ is defined as 
+$$\hat\beta=\sup_\beta l(\beta)=\sup_\beta L(\beta)$$
+where $L(\beta)=\log(l(\beta))$. The MLE is the parameter value under which the data observed have the highest probability of occurrence.
+
+ Statistical inference: MLE (con't)
+========================================================
+- MLE have desirable properties: under weak regularity conditions, MLE have large-sample normal distributions; they are **asymptotically consistent**, converging to the parameter as $n$ increases; and they are **asymptotically efficient**, producing large-sample standard errors no greater than those from other estimation methods. 
+
+
+ Covariance matrix of the MLE
+========================================================
+Let $cov(\mathcal{\hat\beta})$ denote the asymptotic convariance matrix of $\mathcal{\hat\beta}$, where $\mathcal{\beta}$ is a multidimensional parameter.
+
+- Under regularity conditions, $cov(\mathcal{\hat\beta})$ is the inverse of the **information matrix**, which is 
+$$[I(\mathcal{\beta})]_{i,j}=-E\left(\frac{\partial^2 L(\mathcal{\beta})}{\partial\mathcal{\beta}_i\partial\mathcal{\beta}_j}\right)$$
+
+- The standard errors are the square roots of the diagonal elements for the inverse of the information matrix. The greater the curvature of the log likelihood function, the smaller the standard errors.
+
+ Statistical inference for Binomial parameter
+========================================================
+- The binomial log likelihood function is
+$$L(\pi)=\log[\pi^y(1-\pi)^{(n-y)}]$$
+$$=y\log(\pi)+(n-y)\log(1-\pi)$$
+- Differentiating wrt $\pi$ and setting it to 0 gives the MLE $\hat\pi=y/n$.
+- The **Fisher information** is $$I(\pi)=n/[\pi(1-\pi)]$$
+- The asympotic distribution of the MLE $\hat\pi$ is $N(\pi, \pi(1-\pi)/n)$.
+
+ Statistical inference for Binomial parameter
+========================================================
+
+The score, Wald, and likelihood ratio tests use different information from this curve to draw inference about $\pi$.
+
+![binomial likelihood](binomial-likelihood.png)
+
+
+ Wald test
+========================================================
+Consider the hypothesis
+$$H_0:\beta=\beta_0 ~~ H_1:\beta\ne\beta_0$$
+
+ The **Wald test** defines a test statistic
+$$z=(\hat\beta-\beta_0)/SE, \hbox{  where  }
+SE=1/\sqrt{I(\hat\beta)}= n/[\hat\pi(1-\hat\pi)]$$
+Under $H_0: \beta=\beta_0$, the wald test statistic $z$ is approximately 
+standard normal. Therefore $H_0$ is rejected if $|z| > z_{\alpha/2}$.
+
+ Likelihood ratio test 
+========================================================
+**The likelihood ratio test (LRT)** is defined as
+$$-2\log\Lambda=-2\log(l_0/l_1)=-2(L_0-L_1)$$
+where $l_0$ and $l_1$ are the maximized likelihood under $H_0$ and $H_0\cup H_1$. 
+The null hypothesis is rejected if $-2\log\Lambda > \chi^2_\alpha(df)$
+where $df$ is the difference in the dimensions of the parameter spaces under $H_0\cup H_1$ and $H_0$.
+
+Score (a.k.a. Wilson) test
+========================================================
+**Score test**, also called the *Wilson* or *Lagrange multiplier test*, is based on the slope and expected curvature of the log-likelihood function $L(\beta)$ at the null value $\beta_0$. It utilizes the size of the score function
+$$u(\beta)=\partial L(\beta)/\partial \beta$$
+evaluated at $\beta_0$. The score test statistic is
+$$\frac{[u(\beta_0)]^2}{I(\beta_0)}=\frac{[\partial L(\beta)/\partial\beta_0]^2}
+{-E[\partial^2L(\beta)/\partial\beta_0^2]}$$
+The null is rejected when the absolute test statistic is greater than $\chi^2_1(\alpha)$.
+
+ Example: Estimating the proportion of Vegetarians
+========================================================
+Students in a class were surveyed whether they are vegetarians. Of $n=25$ students, $y=0$ answered "yes".
+
+- With the Wald method, the 95% confidence interval for $\pi$ 
+(true proportion of vegetarians in the population) is
+$$\hat\pi \pm 1.96\sqrt{\hat\pi(1-\hat\pi)/n}$$
+which is 
+$$0\pm 1.96\sqrt{(0\times 1)/25}, \hbox{ or } (0,0)$$
+When a parameter falls near the boundary of the sample space, often sample estimates of standard errors are poor and the Wald method does not provide a sensible answer.
+
+- With the score method, the interval equals (0, 0.133)
+
+
+Comparison of the tests
+========================================================
+
+- For small to moderate sample sizes, the likelihood-ratio and score tests are usually more reliable than the Wald test, having actual error rates closer to the nominal level.
+- There are lots of different methods to compute CIs for a binomial proportion!
+```{r}
+library(binom)
+binom.confint(x=0, n=25)
+```
+
+ Bayesian inference for binomial parameters 
+========================================================
+
+Bayesian analyses incorporate "prior information" about parameters using 
+ - prior subjective belief about a parameter, or
+ - prior knowledge from other studies, or
+ - very little knowledge (a ["weakly informative" prior](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations))
+ 
+Prior distribution ($g$) is combined with the likelihood ($f$) to create a posterior ($h$):
+
+\begin{aligned}
+h(\theta|y) &= \frac{f(\by|\theta)g(\theta)}{f(\by)} \\
+ &\propto f(\by|\theta)g(\theta)
+\end{aligned}
+
+
+ Using Beta distributions for priors
+========================================================
+
+If $\pi\sim beta(\alpha_1, \alpha_2)$ (for $\alpha_1>0$ and $\alpha_2>0$) then $g(\pi) \propto \pi^{\alpha_1-1}(1-\pi)^{\alpha_2-1}$.
+
+Beta is a *conjugate prior distribution* for a binomial parameter, implying that the posterior is also a beta distribution, specifically, $h$ follows a $beta(y + \alpha_1 , n − y + \alpha_2)$.
+
+[Shiny app for Bayesian inference of a Binomial.](https://r.amherst.edu/apps/nhorton/Shiny-Bayes/)
+
+ An exercise
+========================================================
+
+1. Write down your prior belief about the probability that this coin will land heads.
+2. Share it with the class
+3. Use the prior probabilities to estimate a beta distribution.
+```{r, eval=FALSE}
+library(MASS)
+fitdistr(x, "beta", list(shape1=1,shape2=1))
+```
+4. Use [the app](https://reichlab.shinyapps.io/bayes-beta-binomial/) to see how the posterior changes as we flip the coin.
+
+
+ Statistical inference for multinomial parameters 
+========================================================
+Given $n$ observations in $c$ categories, $n_j$ occur in category $j$, $j=1,...,c$.
+The multinomial log-likelihood function is 
+$$L(\pi)=\sum_j n_j\log\pi_j$$
+Maximizing this gives MLE
+$$\hat\pi_j=n_j/n$$
+
+Chi-square goodness-of-fit test for a specified multinomial
+========================================================
+Consider hypothesis
+$H_0:\pi_j=\pi_{j0}, j=1,...,c$, 
+- **Chi-square goodness-of-fit statistic (score)**
+$$X^2=\sum_j\frac{(n_j-\mu_j)^2}{\mu_j}$$
+where $\mu_j=n\pi_{j0}$ is called **expected frequencies under $H_0$**. 
+
+- Let $X_o^2$ denote the observed value of $X^2$. The P-value is $P(X^2 > X_o^2)$. 
+
+- For large samples, $X^2$ has approximately a chi-squared distribution with $df=c-1$. The P-value is approximated by $P(\chi_{c-1}^2 \ge X^2_o)$.
+
+ LRT test for a specified multinomial
+========================================================
+- **LRT statistic**
+$$G^2=-2\log\Lambda=2\sum_jn_j\log(n_j/n\pi_{j0})$$
+For large $n$, $G^2$ has a chi-squared null distribution with $df=c-1$.
+
+- When $H_0$ holds, the goodness-of-fit Chi-squiare $X^2$ and the likelihood ratio $G^2$ both have large-sample chi-squared distributions with $df=c-1$. 
+
+- For fixed $c$, as $n$ increases the distribution of $X^2$ usually converges to chi-squared more quickly than that of $G^2$. The chi-squared approximation is often poor for $G^2$ when $n/c < 5$. When $c$ is large, it can be decent for $X^2$ for $n/c$ as small as 1 if table does not contain both very small and moderately large expected frequencies.
+
+ Distributions of categorical variables: Multinomial
+========================================================
+Suppose that each of $n$ **independent and identical** trials can have outcome in any of $c$ categories. Let 
+$$y_{ij}=\left\{\begin{array}{ll}1&\hbox{ if trial }i\hbox{ has outcome in category }j\\0&\hbox{ otherwise }\end{array}\right.$$
+Then ${\bf{y}}_i=(y_{i1},...,y_{ic})$ represents a multinomial trial with $\sum_j y_{ij}=1$. Let $n_j=\sum_i y_{ij}$ denote the number of trials having outcome in category $j$. The counts $(n_1, n_2,..., n_c)$ have the *multinomial distribution*.
+The multinomial pmf is 
+$$p(n_1, ..., n_{c-1})=\left(\frac{n!}{n_1!n_2!...n_c!}\right)\pi_1^{n_1}\pi_2^{n_1}...\pi_{c}^{n_{c}},$$
+where $\pi_j=P(Y_{ij}=1)$
+$$E(n_j)=n\pi_j, ~~~~Var(n_j)=n\pi_j(1-\pi_j)$$
+$$Cov(n_i,n_j)=-n\pi_i\pi_j$$
+
+ Distributions of categorical variables: Poisson
+========================================================
+One simple distribution for count data that do not result from a fixed number of trials. The Poisson pmf is
+$$p(y)=\frac{e^{-\mu}\mu^y}{y!}, y=0, 1,2,... ~~E(Y)=Var(Y)=\mu$$
+For adult residents of Britain who visit France this year, let 
+
+- $Y_1$= number who fly there
+- $Y_2$=number who travel there by train without a car
+- $Y_3$=number who travel there by ferry without a car
+- $Y_4$=number who take a car
+A poisson model for $(Y_1,Y_2,Y_3,Y_4)$ treats these as independent Poisson random variables, with parameters $(\mu_1,\mu_2,\mu_3,\mu_4)$. The total $n=\sum_i Y_i$ also has a Possion distribution, with parameter $\sum_i\mu_i$.
+
+ Distributions of categorical variables: Poisson
+========================================================
+The conditional distribution of $(Y_1,Y_2,Y_3,Y_4)$ given $\sum_i Y_i=n$ is $multinomial(n, {\pi_i=\mu_i/\sum_j\mu_j})$
+
+ The Chi-Squared distribution
+========================================================
+This is not a distribution for the data but rather a sampling distribution for many statistics. 
+
+- The chi-squared distribution with degrees of freedom by $df$ has mean $df$, variance $2(df)$, and skewness $\sqrt{8/df}$. It converges (slowly)  to normality  as $df$  increases, the approximation being reasonably good when $df$ is at least about 50.
+- Let $Z\sim N(0,1)$, then $Z^2\sim\chi^2(1)$
+- The **reproductive property**: if $X_1^2\sim\chi^2(\nu_1)$ and $X_2^2\sim\chi^2(\nu_2)$, then $X^2=X_1^2+X_2^2\sim \chi^2(\nu_1+\nu_2)$. In particular, $X=Z_1^2+Z_2^2+...+Z_\nu^2\sim \chi^2(\nu)$ with the standard normal $Z$'s.
+
+
+
+An example from r-tutor.com
+========================================================
+In the built-in data set survey, the Smoke column records the survey response about the student’s smoking habit. As there are exactly four proper response in the survey: "Heavy", "Regul" (regularly), "Occas" (occasionally) and "Never", the Smoke data is multinomial. It can be confirmed with the levels function in R.
+
+```{r, eval=FALSE}
+library(MASS)       # load the MASS package 
+levels(survey$Smoke) 
+smoke.freq = table(survey$Smoke) 
+```
+
+Problem and solution
+========================================================
+Problem
+
+Suppose the campus smoking statistics is as below. Determine whether the sample data in survey supports it at .05 significance level.
+
+   Heavy   Never   Occas   Regul 
+    4.5\%   79.5\%    8.5\%    7.5\%
+
+Solution
+
+We save the campus smoking statistics in a variable named smoke.prob. Then we apply the chisq.test function and perform the Chi-Squared test.
+
+```{r, eval=FALSE}
+smoke.prob = c(.045, .795, .085, .075) 
+chisq.test(smoke.freq, p=smoke.prob) 
+``` 
+ 
+Testing with estimated expected frequencies
+========================================================
+In some applications, the hypothesized $\pi_{j0}=\pi_{j0}(\mathcal{\theta})$ are functions of a smaller set of unknown parameters $\mathcal{\theta}$. In this case
+
+- Obtain the ML estimates of expected frequencies: $\hat\mu_j=n\pi_{j0}(\mathcal{\hat\theta})$ by plugging in the ML estimates $\mathcal{\hat\theta}$ of $\mathcal{\theta}$
+- Replacing $\mu_j$ by $\hat\mu_j$ in the definition of $X^2$ and $G^2$
+- The approximate distributions of $X^2$ and $G^2$ are $\chi_{df}^2$ with $df=(c-1)-dim(\mathcal{\theta})$.
+
+
+ Example: Pneumonia infections in Calves
+=======================================
+A sample of 156 dairy calves born in Okeechobee County, Florida, were classified according to whether they caught pneumonia within 60 days of birth. Calves that got a pneumonia infection were also classified according to whether they got a secondary infection within 2 weeks after the first infection cleared up. 
+
+ | Secondary |Infection                   
+--- | --- | ---
+Primary Infection| Yes | No
+Yes | 30(38.1)| 63(39.0)
+No | 0 | 63(78.9)
+
+ Probability structure for null hypothesis
+=======================================
+The goal of the study was to test whether the probability of primary infection was the same as the conditional probability of secondary infection, given that the calf got the primary infection. Let $\pi$ be the probability of primary infection, then the null hypothesis states that
+
+ | Secondary |Infection| -                 
+--- | --- | ---|---
+Primary Infection| Yes | No|Total
+Yes | $\pi^2$| $\pi(1-\pi)$|$\pi$
+No | -- | $1-\pi$|$1-\pi$ 
+
+ Example continued
+=======================================
+Let $n_{ab}$ denote the number of observations in row $a$ and column $b$. The ML estimate of $\pi$ is the value maximizing the kernel of the multinomial likelihood
+$$(\pi^2)^{{n}_{11}}(\pi-\pi^2)^{n_{12}}(1-\pi)^{n_{22}}$$
+The MLE is $$\hat\pi=(2n_{11}+n_{12})/(2n_{11}+2n_{12}+n_{22})=0.494$$
+The score statistic is $X^2=19.7$. It follows a Chi-square distribution with $df=c-p-1=(3-1)-1=1$. The p-value is
+$$P(\chi^2_1 > 19.7)=0.00001$$
+Therefore, the primary infection had an immunizing effect that reduced the likelihood of secondary infection.
+
+
+
