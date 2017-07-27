@@ -18,11 +18,11 @@ Week |       |     | Topic   | Notes | HW Due | Reading
  6   |     | 12     | GLMs Recap | || 
  7   |     | 17, 19 | Estimation theory | || 
  8   |     | 24, 26 | Smoothing splines | || 
-     | Nov | 31, 2  | Mutli-level models | | |
- 9   |     | 7, 9   | Midterm review and exam | || 
- 10  |     | 14, 16 | Non-model based CDA | || 
- 11  |     | 21, 23 | Thanksgiving | || 
- 12  |     | 28, 30 | Review | || 
+ 9   | Nov | 31, 2  | Mutli-level models | | |
+ 10  |     | 7, 9   | Midterm review and exam | || 
+ 11  |     | 14, 16 | Non-model based CDA | || 
+     |     | 21, 23 | Thanksgiving | || 
+ 12  |     | 28, 30 | Review and catch-up | || 
  13  | Dec | 5, 7   | CDA History/Projects | || 
  14  |     | 12     | Projects | || 
 

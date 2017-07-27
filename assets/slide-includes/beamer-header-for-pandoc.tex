@@ -3,10 +3,10 @@
 %	**        statsTeachR labs/handouts.
 %
 %	Author: Nicholas G Reich
-%	Last modified: 14 January 2014
+%	Last modified: July 2017
 %	************************************************
 
-\documentclass[table]{beamer}
+%\documentclass[table]{beamer}
 
 %	Set theme (a nice plain one)
 \usetheme{Malmoe}
@@ -53,7 +53,7 @@
 	% There must be a better way than this -vspace at
 	%	 the top and bottom of the page to reduce the 
 	%	 bottom margin, but I can't find one that works.
-	\vspace{-6em}
+	%\vspace{-6em}
 
 % 	% Go to a lot of trouble to get the title in a
 % 	%	nice box, since customizing a beamer block
@@ -74,14 +74,17 @@
 	\small{Author: \insertauthor}
 	\vspace{\baselineskip}
 
-	\small{\Course}
+	\small{Course: \underline{\href{http://nickreich.github.io/cda}{Categorical Data Analysis}} (BIOSTATS 743)}
 
-	\small{\Instructor}
-	\vspace{\baselineskip}
+%	\small{\Instructor}
+%	\vspace{\baselineskip}
 
-	\small{\emph{This material is part of the \strong{statsTeachR} project}}
+%	\small{\emph{This material is part of the \strong{statsTeachR} project}}
 
-	\vspace{0.33\baselineskip}\scriptsize{\emph{\LicenseText}}
+	\vfill
+	
+	\tiny{\emph{Made available under the \underline{\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons Attribution-ShareAlike 4.0 International License}.}} \hfill \includegraphics[height=1em]{../slide-includes/by-sa-compact.png}
+ }
 
 
 		\vspace{-15em}
@@ -90,70 +93,6 @@
 	\clearpage
 }	% end define title page
 
-\title{Introduction to \\ Telling Stories with Data}
-%	Global variable containing module shortname:
-%		(Currently unused, may be used in future.)
-\newcommand{\ModuleShortname}{introRegression}
-%	Global variable containing author name:
-\author{Nicholas G Reich}
-%	Global variable containing text of license terms:
-\newcommand{\LicenseText}{Made available under the Creative Commons Attribution-ShareAlike 3.0 Unported License: http://creativecommons.org/licenses/by-sa/3.0/deed.en\textunderscore US }
-%	Instructor: optional, can leave blank.
-%		Recommended format: {Instructor: Jane Doe}
-\newcommand{\Instructor}{}
-%	Course: optional, can leave blank.
-%		Recommended format: {Course: Biostatistics 101}
-\newcommand{\Course}{}
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
 \input{../slide-includes/shortcuts}
 
 \hypersetup{colorlinks,linkcolor=,urlcolor=MainColor}
-
-\begin{document}
-$if(title)$
-\frame{\titlepage}
-$endif$
-
-$for(include-before)$
-$include-before$
-
-$endfor$
-$if(toc)$
-\begin{frame}
-\tableofcontents[hideallsubsections]
-\end{frame}
-
-$endif$
-$body$
-
-$if(natbib)$
-$if(bibliography)$
-$if(biblio-title)$
-$if(book-class)$
-\renewcommand\bibname{$biblio-title$}
-$else$
-\renewcommand\refname{$biblio-title$}
-$endif$
-$endif$
-\begin{frame}[allowframebreaks]{$biblio-title$}
-\bibliographytrue
-\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
-\end{frame}
-
-$endif$
-$endif$
-$if(biblatex)$
-\begin{frame}[allowframebreaks]{$biblio-title$}
-\bibliographytrue
-\printbibliography[heading=none]
-\end{frame}
-
-$endif$
-$for(include-after)$
-$include-after$
-
-$endfor$
-\end{document}

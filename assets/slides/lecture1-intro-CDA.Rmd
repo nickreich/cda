@@ -1,6 +1,11 @@
 ---
-title: "Categorical Data Analysis Chapter 1"
-output: beamer_presentation
+title: "Intro to Categorical Data Analysis"
+author: Nicholas Reich and Anna Liu
+output: 
+  beamer_presentation:
+    includes:
+      in_header: ../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
 ---
 
  Introduction
@@ -9,6 +14,16 @@ output: beamer_presentation
 - This course focuses on methods for categorical **response** variables. 
 - **Explanatory** variables can be any type
 - For instance, a study might analyze how opinion about whether same-sex marriages should be legal (yes or no) changes according to values of explanatory varaibles, such as regilgious affiliation, political ideology, number of years of education, annual income, age, gender, and race.
+
+ Code example
+========================================================
+
+```{r}
+## does this code work?
+a <- 1:10
+plot(a)
+```
+
 
  Types of categorical variables
 ========================================================
@@ -23,6 +38,7 @@ output: beamer_presentation
 * **Interval**(**ratio**) variable: one that *does* have numerical distances between any two values
     + systolic blood pressure level
     + annual income
+
  
  Types of categorical variables
 ========================================================
