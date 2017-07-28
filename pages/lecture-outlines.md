@@ -8,7 +8,7 @@
 
 ### Lecture 1: intro to CDA
 
- - class intro
+ - class intro/syllabus
  - Lecture: intro to CDA
     - what is data, what is categorical data
     - types of categorical data
@@ -16,11 +16,13 @@
     - Frameworks for inference: frequentist, likelihood, Bayesian
     - likelihoods for categorical data
     - Binomial tests of proportions
- - Activity: wits and wagers?
+ - Activity: Bayes coin-flipping...
  - concepts to be reinforced out of class: 
     - inference about proportions (with Bayes?)
     - MLE/likelihood
     - differences in CI coverage at different values of true p.
+    - derivations of CI coverage
+    - chi-squared distribution
  
 ### Lecture 2: contingency tables
 

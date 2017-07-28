@@ -2,6 +2,8 @@
 .Rhistory
 .Rapp.history
 
+*.tex
+
 # Session Data files
 .RData
 *.Rproj

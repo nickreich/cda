@@ -10,8 +10,8 @@ _CDA_ refers to the textbook _Categorical Data Analysis_ by Alan Agresti.
 
 Week |       |     | Topic   | Notes | HW Due | Reading
 ---- | ----- | --- | ------- | ----- |:------:| -------
- 1   | Sep | 5, 7   | Intro to CDA | || 
- 2   |     | 12, 14  &nbsp;| Contingency tables/GLMs | || 
+ 1   | Sep | 5, 7   | Intro to CDA | || CDA 1-2
+ 2   |     | 12, 14  &nbsp;| Contingency tables/GLMs | || CDA 2
  3   |     | 19, 21 | Binary Outcomes | || 
  4   |     | 26, 28 | Multinomial/Poisson | || 
  5   | Oct | 3, 5   | Poisson and extensions | || 
