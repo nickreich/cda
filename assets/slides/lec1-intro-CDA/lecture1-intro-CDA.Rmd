@@ -34,6 +34,14 @@ knitr::opts_chunk$set()
     - Longitudinal data (repeated measures)
     - Zero-inflated models, over-dispersion
 
+ History of the course
+========================================================
+
+* Taught since mid-1980s at UMass
+
+![](applied-logistic-regression-cover.jpg)
+
+
  Course Introduction
 ========================================================
 
