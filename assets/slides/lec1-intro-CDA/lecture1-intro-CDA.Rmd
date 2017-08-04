@@ -22,7 +22,19 @@ knitr::opts_chunk$set()
 - Balance of traditional stat theory and application.
 - Most applications will have biomedical/public health focus.
 
- Focus of the course
+
+ History of the course
+========================================================
+
+* Taught since mid-1980s at UMass-Amherst (PUBHLTH 743)
+* Led to most cited statistics book in print (> 30,000 citations)
+
+```{r, out.width = "100pt", echo=FALSE}
+knitr::include_graphics("applied-logistic-regression-cover.jpg")
+```
+
+
+ Focus of this course (different from the original)
 ========================================================
 
 * Foundational concepts
@@ -33,13 +45,6 @@ knitr::opts_chunk$set()
     - Machine Learning classification methods
     - Longitudinal data (repeated measures)
     - Zero-inflated models, over-dispersion
-
- History of the course
-========================================================
-
-* Taught since mid-1980s at UMass
-
-![](applied-logistic-regression-cover.jpg)
 
 
  Course Introduction
@@ -57,9 +62,10 @@ knitr::opts_chunk$set()
  Types of categorical variables
 ========================================================
 * The way that a variable is measured determines its classification
-    - when measured as (public school, private school, home schooling), `education` is _______
-    - when measured by highest degree attained (none, high school, barchelor's,        master's, doctorate), it is _________
-    - when measured by number of years of education completed using integers (0, 1,     2, 3, ...), it is _______
+    - What are different ways that a variable on education could be classified?
+
+\vspace{5em}
+    
 * The granularity of your data matters! 
     - In terms of information per measured datapoint, discrete variables > ordinal variables > nominal variables
     - This has implications for study design and sample size.
