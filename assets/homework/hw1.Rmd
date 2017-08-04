@@ -1,0 +1,37 @@
+---
+title: 'Homework 1: Categorical Data'
+author: "Nicholas G Reich, for PUBHLTH 490ST at UMass-Amherst"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, eval=FALSE)
+```
+
+Your assignment must be handed in as a PDF file, reproducibly compiled using LaTeX or markdown.
+
+## Inference for binomial parameter
+
+## Question 1
+Say you flip a coin 100 times and get 53 heads. 
+
+a. Write down the Score test statistic and by hand (i.e. don't used a canned R function to calculate the test statistic for you) conduct a test of the null hypothesis $H_0: \pi$=0.5. 
+b. Draw a picture of the likelihood and show what features of the likelihood are used for the Score test statistic. 
+c. Explain (using pictures and equations)  how the Score test uses different information than the likelihood ratio test.
+
+## Question 2
+Conduct a simulation study to evaluate the coverage probabilities of different methods for computing confidence intervals for $\pi$. You may vary the true $\pi$, the sample size, and must choose at least 4 methods to compare. Your results should be summarized with a one paragraph description of the implementation of the simulation study, a one paragraph descirption of the results, and one figure (multi-panel is ok) summarizing the results.
+
+## Question 3
+Prove that if $Y\sim Binom(n, \pi)$ and $\pi\sim beta(\alpha_1, \alpha_2)$ (for $\alpha_1>0$ and $\alpha_2>0$) then the posterior $h(\pi|y)$ is a beta distribution, specifically, $h$ follows a $beta(y + \alpha_1 , n - y + \alpha_2)$.
+
+## Question 4
+Complete problem 1.17 in CDA.
+
+## Getting started
+Let's use the FEV data again and focus on the relationship betwen the fev variable with the age, height, and smoke covariates. To start, let's load the data into our current R session:
+```{r, eval=TRUE}
+library("Hmisc")
+getHdata(FEV)
+```
+
