@@ -151,30 +151,43 @@ Score (a.k.a. Wilson) test
 ========================================================
 **Score test**, also called the *Wilson* or *Lagrange multiplier test*, is based on the slope and expected curvature of the log-likelihood function $L(\beta)$ at the null value $\beta_0$. It utilizes the size of the score function
 $$u(\beta)=\partial L(\beta)/\partial \beta$$
-evaluated at $\beta_0$. The score test statistic is
-$$\frac{[u(\beta_0)]^2}{I(\beta_0)}=\frac{[\partial L(\beta)/\partial\beta_0]^2}
-{-E[\partial^2L(\beta)/\partial\beta_0^2]}$$
-The null is rejected when the absolute test statistic is greater than $\chi^2_1(\alpha)$.
+evaluated at $\beta_0$. 
+
+The score test statistic is
+$$z = \frac{u(\beta_0)}{[I(\beta_0)]^{1/2}}=\frac{\hat\pi-\pi_0}
+{\pi_0(1-\pi_0)/n}$$.
 
  Example: Estimating the proportion of Vegetarians
 ========================================================
 Students in a class were surveyed whether they are vegetarians. Of $n=25$ students, $y=0$ answered "yes".
 
-- With the Wald method, the 95% confidence interval for $\pi$ 
-(true proportion of vegetarians in the population) is
-$$\hat\pi \pm 1.96\sqrt{\hat\pi(1-\hat\pi)/n}$$
-which is 
-$$0\pm 1.96\sqrt{(0\times 1)/25}, \hbox{ or } (0,0)$$
-When a parameter falls near the boundary of the sample space, often sample estimates of standard errors are poor and the Wald method does not provide a sensible answer.
+- Using the Wald method, compute the 95% confidence interval for $\pi$ (true proportion of vegetarians in the population):
+<!--$$\hat\pi \pm 1.96\sqrt{\hat\pi(1-\hat\pi)/n}$$
+$$0\pm 1.96\sqrt{(0\times 1)/25}, \hbox{ or } (0,0)$$ -->
 
-- With the score method, the interval equals (0, 0.133)
+\vspace{5em}
+
+
+- Using the Score method, compute the 95% confidence interval for $\pi$ (true proportion of vegetarians in the population):
+
+<!-- - With the score method, the interval equals (0, 0.133)-->
+
+
+ Warning about the Wald test
+========================================================
+
+ - When a parameter falls near the boundary of the sample space, often sample estimates of standard errors are poor and the Wald method does not provide a sensible answer.
+ 
+ - For small to moderate sample sizes, the likelihood-ratio and score tests are usually more reliable than the Wald test, having actual error rates closer to the nominal level.
+ 
 
 
 Comparison of the tests
 ========================================================
 
-- For small to moderate sample sizes, the likelihood-ratio and score tests are usually more reliable than the Wald test, having actual error rates closer to the nominal level.
-- There are lots of different methods to compute CIs for a binomial proportion!
+There are lots of different methods to compute CIs for a binomial proportion!
+
+\scriptsize
 ```{r}
 library(binom)
 binom.confint(x=0, n=25)
@@ -215,6 +228,9 @@ Beta is a *conjugate prior distribution* for a binomial parameter, implying that
 3. Use the prior probabilities to estimate a beta distribution.
 ```{r, eval=FALSE}
 library(MASS)
+x <- c(
+    ## enter probabilities here
+    )
 fitdistr(x, "beta", list(shape1=1,shape2=1))
 ```
 4. Use [the app](https://reichlab.shinyapps.io/bayes-beta-binomial/) to see how the posterior changes as we flip the coin.

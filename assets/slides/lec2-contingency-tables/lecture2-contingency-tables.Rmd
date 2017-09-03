@@ -3,6 +3,7 @@ title: "Contingency Tables"
 author: "Nicholas Reich and Anna Liu"
 output:
   slidy_presentation: default
+  ioslides_presentation: default
   beamer_presentation:
     includes:
       in_header: ../../slide-includes/beamer-header-for-pandoc.tex
