@@ -135,7 +135,7 @@ $$H_0:\beta=\beta_0 ~~ H_1:\beta\ne\beta_0$$
 
  The **Wald test** defines a test statistic
 $$z=(\hat\beta-\beta_0)/SE, \hbox{  where  }
-SE=1/\sqrt{I(\hat\beta)}= n/[\hat\pi(1-\hat\pi)]$$
+SE=1/\sqrt{I(\hat\beta)}= \sqrt{\hat\pi(1-\hat\pi)/n}$$
 Under $H_0: \beta=\beta_0$, the wald test statistic $z$ is approximately 
 standard normal. Therefore $H_0$ is rejected if $|z| > z_{\alpha/2}$.
 
