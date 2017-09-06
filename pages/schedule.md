@@ -12,7 +12,7 @@ Week |       |     | Topic   | Notes | HW Due | Reading
 ---- | ----- | --- | ------- | ----- |:------:| -------
  1   | Sep | 5, 7   | Intro to CDA |  || CDA 1-2
  2   |     | 12, 14  &nbsp;| Contingency tables/GLMs | || CDA 2
- 3   |     | 19, 21 | Binary Outcomes | || 
+ 3   |     | 19, 21 | Binary Outcomes | | [HW1](../assets/homework/hw1.pdf) | 
  4   |     | 26, 28 | Multinomial/Poisson | || 
  5   | Oct | 3, 5   | Poisson and extensions | || 
  6   |     | 12     | GLMs Recap | || 
