@@ -1,8 +1,11 @@
 ---
 title: "Intro to Categorical Data Analysis"
-author: "Nicholas Reich and Anna Liu"
+author: "Nicholas Reich and Anna Liu, based on Agresti Ch 1"
 output:
-  pdf_document: default
+  pdf_document: 
+    includes:
+      in_header: ../../slide-includes/shortcuts.tex
+    keep_tex: yes
   beamer_presentation:
     includes:
       in_header: ../../slide-includes/beamer-header-for-pandoc.tex
