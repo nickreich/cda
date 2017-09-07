@@ -2,6 +2,7 @@
 title: "Intro to Categorical Data Analysis"
 author: "Nicholas Reich and Anna Liu"
 output:
+  pdf_document: default
   beamer_presentation:
     includes:
       in_header: ../../slide-includes/beamer-header-for-pandoc.tex
