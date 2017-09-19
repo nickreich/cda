@@ -1,0 +1,287 @@
+---
+title: "Contingency Tables (Continued)"
+author: "Coco Kusiak & Liz Austin, based on Agresti Chapters 2&3 and other related Bayesian content"
+date: "9/12/2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(xtable)
+options(xtable.comment = FALSE)
+```
+
+#General Notation for Contingency Tables:  
+
+**IJ Tables** represent 2 categorical variables  
+
+```{r, echo=FALSE, results='asis', eval=FALSE}
+top <- c(NA, "Y_1", "Y_2", ". . .", "Y_J", NA)
+x1 <- c("X_1", "n_11", "n_12", ". . .", NA, "n_1+")
+x2 <- c("X_2", "n_21", NA, NA, NA, "n_2+")
+x3 <- c(". . .", NA, NA, "n_ij", NA, NA)
+xi <- c("X_I", NA, NA, NA, NA, NA)
+bottom <- c(NA, "n_+1", "n_+2", NA, NA, "n")
+matrix.ij <- rbind(top, x1, x2, x3, xi, bottom)
+frame.ij <- as.data.frame(matrix.ij)
+tab.ij <- xtable(frame.ij, align = "cc|cccc|c")
+print(tab.ij, include.colnames = FALSE, include.rownames = FALSE, hline.after=c(1, 5))
+```
+
+```{r, echo=FALSE, results='asis'}
+top <- c(NA, "Y_1", "Y_2", ". . .", "Y_J", NA)
+x1 <- c("X_1", "n_11", "n_12", ". . .", ". . .", "n_1+")
+x2 <- c("X_2", "n_21", ". . .", ". . .", ". . .", "n_2+")
+x3 <- c(". . .", ". . .", ". . .", "n_ij", ". . .", ". . .")
+xi <- c("X_I", ". . .", ". . .", ". . .", "n_IJ", ". . .")
+bottom <- c(NA, "n_+1", "n_+2", ". . .", ". . .", "n")
+matrix.ij <- rbind(top, x1, x2, x3, xi, bottom)
+frame.ij <- as.data.frame(matrix.ij)
+tab.ij <- xtable(frame.ij, align = "cc|cccc|c")
+print(tab.ij, include.colnames = FALSE, include.rownames = FALSE, hline.after=c(1, 5))
+```
+
+
+**$n_{ij}$** = counts with X = i and Y = j  
+
+**$\pi_{ij}$** = population parameter representing the true probability of being in the *$ij^{th}$* cell (when X = i and Y = j)  
+ $$= \text{joint probability of X and Y}  $$
+ $$= Pr(X=i, Y=j)  $$
+$$\text{with} \{\pi_{ij}: i = 1, ..., I; j = 1, ..., J\}$$ 
+
+$P_{ij} = \text{sample/observed probabilities}$    
+
+$n = \sum_{i, j} n_{ij}$  
+
+$\pi_{i+} = \text{marginal distribution across rows} = \sum_{j} \pi_{ij}$  
+
+$\pi_{+j} = \text{marginal distribution across columns} = \sum_{i} \pi_{ij}$  
+
+$\pi_{j|i} = \text{conditional probability of j given i} = \frac{\pi_{ij}}{\pi_{i+}} = Pr(Y=j | X = i)$  
+
+*Note*: This is equivalent to E[Y|X] in regression.  
+
+#Sampling Types:  
+
+##1. Poisson   
+* The overall __n__ is not fixed 
+* There is generally a time interval implied 
+* Example: A prospective longitudinal cohort study about developing a disease   
+
+```{r, echo=FALSE, results='asis'}
+Disease = c("n_1", "n_2", "n_3")
+tab_disease <- data.frame(Disease)
+rownames(tab_disease) <- c("X1", "X2", "X3")
+xtable(tab_disease, align = "c|c")
+```  
+
+$$n_{1} = \text{total \# of people in catergory X1 with the disease}$$     
+
+* Example: # of accidents at an intersection over a year  
+
+```{r, echo=FALSE, results='asis'}
+accidents = c("n_11", "n_21")
+fatal = c("n_12", "n_22")
+frame.accidents <- data.frame(accidents, fatal)
+rownames(frame.accidents) <- c("AM", "PM")
+colnames(frame.accidents) <- c("Number of Accidents", "Number of Fatal Accidents")
+xtable(frame.accidents, align = "c|c|c")
+```  
+
+$$n_{12} = \text{total \# of fatal accidents which occurred in the morning}$$
+
+
+
+
+##2. Multinomial 
+
+a. with fixed __n__   
+     + Example: A cohort study with 3 categories of socioeconomic status and a binary outcome of illness (a fixed # of people are enrolled in the study)  
+  
+```{r, echo=FALSE, results='asis', eval=FALSE}
+sick <- c("n_11", "n_21", "n_31", "n_+1")
+not_sick <- c("n_12", "n_22", "n_32", "n_+2")
+total <- c("n_1+", "n_2+", "n_3+", "2000")
+frame.sick <- data.frame(sick, not_sick, total)
+rownames(frame.sick) <- c("SE_1", "SE_2", "SE_3", "Total")
+colnames(frame.sick) <- c("Sick", "Not Sick", "Total")
+tab.sick <- xtable(frame.sick, align = "c|cc|c")
+print(tab.sick, hline.after = c(-1, 0, 3))
+```
+
+```{r, echo=FALSE, results='asis'}
+sick <- c("n_11", "n_21", ". . .", "n_+1")
+not_sick <- c("n_12", ". . .", ". . .", ". . .")
+total <- c("n_1+", ". . .", ". . .", "2000")
+frame.sick <- data.frame(sick, not_sick, total)
+rownames(frame.sick) <- c("SE_1", "SE_2", "SE_3", "Total")
+colnames(frame.sick) <- c("Sick", "Not Sick", "Total")
+tab.sick <- xtable(frame.sick, align = "c|cc|c")
+print(tab.sick, hline.after = c(-1, 0, 3))
+```
+
+
+```{r, echo=FALSE, results='asis', eval=FALSE}
+sick <- c("n_11", "n_21", NA, NA)
+not_sick <- c("n_12", NA, NA, NA)
+total <- c(NA, NA, NA, 2000)
+frame.sick <- data.frame(sick, not_sick, total)
+rownames(frame.sick) <- c("SE_1", "SE_2", "SE_3", "Total")
+colnames(frame.sick) <- c("Sick", "Not Sick", "Total")
+xtable(frame.sick)
+```
+
+  
+b. __row or column totals__ are fixed  
+      * Example: A case-control study 
+
+```{r, echo = FALSE, results='asis', eval=FALSE}
+case <- c(NA, NA, NA, 1000)
+control <- c(NA, NA, NA, 1000)
+frame.case <- data.frame(case, control)
+rownames(frame.case) <- c("SE_1", "SE_2", "SE_3", "Total")
+colnames(frame.case) <- c("Case", "Control")
+xtable(frame.case, align = "c|cc")
+```
+
+```{r, echo = FALSE, results='asis'}
+case <- c(". . .", ". . .", ". . .", 1000)
+control <- c(". . .", ". . .", ". . .", 1000)
+frame.case <- data.frame(case, control)
+rownames(frame.case) <- c("SE_1", "SE_2", "SE_3", "Total")
+colnames(frame.case) <- c("Case", "Control")
+print(xtable(frame.case, align = "c|cc"), hline.after = c(-1, 0, 3))
+```
+
+```{r, echo = FALSE, results='asis', eval=FALSE}
+case <- c("n_11", "n_21", "n_31", 1000)
+control <- c("n_12", "n_22", "n_32", 1000)
+frame.case <- data.frame(case, control)
+rownames(frame.case) <- c("SE_1", "SE_2", "SE_3", "Total")
+colnames(frame.case) <- c("Case", "Control")
+xtable(frame.case)
+```
+
+##  
+    
+    
+
+#$\chi^2$ Tests  
+
+$$\text{Test Statistic =} \frac{\sum {(O - E)}^2}{E} \text{over all cells/counts}$$  
+
+$$\text{with E = expected \# of counts under the null hypothesis}$$   
+
+## 
+
+
+
+* We reject $H_0$ if the test statistics is "large" 
+    + A larger TS means larger deviations from expected counts   
+* Test is 2-sided by virtue of $(...)^2$  
+* Compare to a $(1 - \alpha)\%$ile of the $\chi_{df}^{2}$ distribution
+
+##Goodness of Fit $\chi^2$ Test  
+
+$$H_0: P_1 = P_{0_1}, P_2 = P_{0_2}, ..., P_k = P_{0_k}$$
+
+This answers the question: Does a set of counts follow a specified distribution?
+
+**n** = total # of observations  
+$E_i  = P_{0_i} \cdot n$  
+**df** = $k - 1$
+
+__Note:__ $P_1 = P_2 = ... = P_k$ is a special case    
+
+###Birth Order and Gender  
+We have data on 1,000 2-child families. It is typically thought that birth order/gender of two offspring from the same parents are i.i.d. Bernoulli(0.5). So, we can fill in the expected values as 250 for each group.  
+
+$$H_0: P_1 = P_2 = P_3 = P_4 = 0.25$$
+$$H_a: \text{at least 1 } P_i \neq 0.25$$  
+
+##  
+
+```{r, echo=FALSE, results='asis'}
+first <- c("M", "  ", "F", "  ", "  ")
+first.child <- c("M", "M", "F", "F")
+second.child <- c("M", "F", "M", "F", "Totals")
+counts <- c(218, 227, 278, 277, 1000)
+exp <- c(250, 250, 250, 250, 1000)
+mat.birth <- rbind(first, second.child, counts, exp)
+frame.birth <- as.data.frame(mat.birth)
+rownames(frame.birth) <- c("First Child", "Second Child", "Count", "Expected Value")
+tab.birth <- xtable(frame.birth, align = "r|cccc|c")
+print(tab.birth, include.colnames = FALSE, hline.after = c(-1, 0, 2))
+```  
+
+##   
+
+$$TS = \frac{\sum_{k=1}^{4}{(n_{obs} - n_{exp})^2}}{n_{exp}}$$  
+$$n = 1000, \text{  } k = 4, df = \text{k-1} = 3$$
+$$\alpha = 0.05$$
+
+```{r}
+n_obs <- c(218, 227, 278, 277)
+n_exp <- c(250, 250, 250, 250)
+ts <- sum((n_obs-n_exp)^2/n_exp)
+ts
+pval <- 1 - pchisq(ts, df = 3)
+pval
+```  
+
+With a p-value of 0.0065, we reject the null hypothesis at a significance level of 0.05. We have evidence to suggest that at least 1 $P_k \neq 0.25$. 
+
+
+```{r, echo=FALSE}
+curve(dchisq(x, df=3), col='black', main = "Chi-Square Density Graph",
+          from=0, to=15, ylim = c(0, 0.25))
+abline(h = 0)
+abline(v = ts, col = "red")
+xs <- seq(ts, 15, length=101)
+probs <- dchisq(xs, df=3)
+polygon(c(xs, rev(xs)), c(probs, rep(0, length(probs))),
+        col=adjustcolor("red", alpha=0.8))
+```  
+
+
+#Test of Independence  
+
+**Definition**: Two variables are independent if $\forall i \in \{1, ..., I\}, j \in \{1, ..., J\}$, $\pi_{ij} = \pi_{i+} \pi_{+j}$.  
+
+This is equivalent to: $Pr(X=i, Y=j) = Pr(X=i) \cdot Pr(Y=j)$.   
+
+If true, this implies $\pi_{j|i} = \frac{\pi_{ij}}{\pi_{i+}} = \frac{\pi_{i+}\pi_{+j}}{\pi_{i+}} = \pi_{+j}$.  
+
+##For $\chi^2$ Test:  
+
+$$H_0: \pi_{ij} = \pi_{i+} \cdot \pi_{+j} \text{      } \forall_{i,j}$$  
+
+$$\hat{\pi}_{i+} = \frac{n_{i+}}{n}, \text{     } \hat{\pi}_{+j} = \frac{n_{+j}}{n}$$  
+
+$$E_{ij} = \hat{\mu}_{ij} = n \cdot \hat{\pi}_{i+} \cdot \hat{\pi}_{+j} = \frac{n_{i+} n_{+j}}{n}$$  
+
+$$df = (\# rows - 1)(\# columns - 1)$$  
+
+**Book suggestion:** Expand a small table and include the $n_{ij}$, $E_{ij}$, and the $(O - E)_{ij}$ for each cell. This may allow you to see patterns and information in the data beyond just the p-value.  
+
+
+#Bayesian Multinomial    
+
+The likelihood of Y is a vector of counts with the # of observations for each category/outcome j.  
+
+$$P(Y|\theta) \propto \prod_{j=1}^{k} {\theta_{j}^{y_{i}}} \text{ where } \sum_{j=1}^{k}{\theta_{j}} = 1$$  
+
+In this case, the conjugate prior distribution is a multivariate generalization of Beta called the Dirichlet Distribution.    
+
+$$P(\theta|\alpha) \propto \prod_{j=1}^{k}{\theta_{j}^{\alpha_{j}-1}} \text{ with } \theta_j \geq 0 \text{ with } \sum_{j=1}^{k}{\theta_{j}} = 1$$   
+
+This implies the posterior follows the Dirichlet Distribution: 
+$$P(\theta|Y) \sim Dirichlet(\alpha_1 + y_1 \text{, } \alpha_2 + y_2 \text{..., } \alpha_k + y_k)$$
+
+##Choices for priors:  
+1. $\alpha_{j} = 1 \text{  } \forall \text{  } j$
+    + this distribution assigns equal density to any vector $\theta$ such that $\sum{\theta_{j}} = 1$  
+
+2. $\alpha_{j} = 0 \text{  } \forall \text{  } j$
+    + this is an improper prior, but it is uniform on $log(\theta_{j})$
+    + as long as $y_{j} > 0 \text{  } \forall \text{  } j$, then there are no problems with your posterior
