@@ -1,0 +1,52 @@
+---
+title: "Untitled"
+author: "Nicholas G Reich"
+date: "September 20, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The dataset we will be using is the titanic3 dataset which is part of the PASWR package. This dataset describes demographic characteristics and outcomes for passengers of the Titanic.
+
+
+### Loading the data
+```{r, message=FALSE}
+library(PASWR)
+library(arm)
+data(titanic3)
+str(titanic3)
+```
+
+
+## testing nested models
+
+## looking at residuals
+
+## plotting predicted probabilities for different groups with SEs
+
+## looking at/interpreting coefficients
+
+## running a model with rstanarm
+
+## making likelihood-based CIs?
+
+## looking at leverage
+
+
+```{r fig.width=10, fig.height=6}
+m1 <- glm(survived ~ 1, data=titanic3, family=binomial)
+
+
+binnedplot(x = predict(m1), y = resid(m1), nclass = 10)
+
+titanic3$preds <- fitted(m1, type="response")
+qplot(pclass, preds, data=titanic3, color=pclass, geom=c("jitter")) + 
+        ylim(0,1) +
+        ylab("predicted probability")
+```
+
+The final figure need not have an axis for every variable included in the model, but it should show several different dimensions (using axes, colors, facets, heat maps, etc...).
+
