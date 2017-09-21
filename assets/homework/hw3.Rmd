@@ -31,3 +31,9 @@ Fix $\alpha=log(15)$, $\beta = log(2)$, and draw $x_i$ independently from the di
 ## Question 2
 
 Gibbs sampling with censoring? ARM (402).
+
+## Question 3
+
+conditional logit
+
+
