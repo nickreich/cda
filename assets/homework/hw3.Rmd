@@ -36,4 +36,11 @@ Gibbs sampling with censoring? ARM (402).
 
 conditional logit
 
+## Question 4
+
+This question uses the `frisk_with_noise.dat` dataset in the `CDA` Google Drive folder. The data resulted from an investigation by the NY State Attorney General's Office into the "stop and frisk" policies of the NYPD. These data are an anonymized version of that data, collected over a 15-month period in 1998 and 1999. For this analysis, we are interested in looking at the impact of ethnicity and precinct on the rate of police stops.
+
+(a) Based on this data, does ethnicity play a role in rate of police stopping? **Before** running any models, look at the data available to you and write down a one-paragraph analysis plan that describes what models you will fit. For this section, do not consider any models with overdispersion. Include in your write-up, the analysis plan, summary output of key models that you fit, and a one-paragraph summary of the results. Use mathematical notation to write down the model equations for at least one of the fitted models.
+
+(b) For one of the chosen models from part (a), investigate whether a correction for overdispersion is needed. If it is, fit a new model with the correction in place. Show the results, describe how and why the results changed (if they did) and and re-interpret the results in light of this model.
 
