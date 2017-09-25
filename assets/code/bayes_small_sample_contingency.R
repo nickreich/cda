@@ -1,7 +1,7 @@
 
 ## see https://lingpipe-blog.com/2009/10/13/bayesian-counterpart-to-fisher-exact-test-on-contingency-tables/
     
-library("MCMCpack")
+library(MCMCpack)
 y1 <- 10; n1 <- 22
 y2 <- 2; n2 <- 28
 
