@@ -30,7 +30,11 @@ Fix $\alpha=log(15)$, $\beta = log(2)$, and draw $x_i$ independently from the di
 
 ## Question 2
 
-Gibbs sampling with censoring? ARM (402).
+Gibbs sampling with censoring? ARM (402). Using a Poisson model?
+
+ROC curve
+
+rstanarm
 
 ## Question 3
 
@@ -44,3 +48,4 @@ This question uses the `frisk_with_noise.dat` dataset in the `CDA` Google Drive 
 
 (b) For one of the chosen models from part (a), investigate whether a correction for overdispersion is needed. If it is, fit a new model with the correction in place. Show the results, describe how and why the results changed (if they did) and and re-interpret the results in light of this model.
 
+(c) Considering the analysis plan that you wrote in (a) if you had it to do again, is there anything you would change about the analysis plan if you had to do it over again? Why?
