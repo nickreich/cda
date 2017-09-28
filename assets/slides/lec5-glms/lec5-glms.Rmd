@@ -1,0 +1,246 @@
+---
+title: "Generalized Linear Models"
+author: "Jonathan Moyer and Heather Weaver, based on Agresti Ch 4"
+date: "September 19, 2017"
+header-includes:
+   - \usepackage{amsmath}
+output:
+  pdf_document: 
+    includes:
+      in_header: ../../slide-includes/shortcuts.tex
+    keep_tex: yes
+  beamer_presentation:
+    includes:
+      in_header: ../../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+Generalized Linear Models (GLMS)
+========================================================
+
+- Extensions to linear models (LMs).
+- Outcomes are can be non-normal, expressed as functions on the mean.
+- Example for ordinary LM:
+
+$$\textbf{Y} = \textbf{X}\beta + \epsilon$$
+
+$$\epsilon_i \overset{iid}{\sim} \mathcal{N}(0, \sigma^2)$$
+
+- The best fit line on the following plot represents the estimated value of $Y$ given the value of $X$.
+
+```{r, fig.width = 4, fig.align = "center"}
+x <- 1:20
+set.seed(1)
+y <- 10*x + rnorm(20, 0, 10)
+mod <- lm(y ~ x)
+{plot(y ~ x)
+abline(mod)
+text(15, 175, "E[Y|X]")}
+```
+
+
+
+
+ History and Overview of GLMs
+========================================================
+
+* 1920s: RA Fisher develops score equations.
+* 1970s: GLMs unified by Nelder and Wedderburn in the 1970s.
+* Fairly flexible parametric framework (parametric still implies some rigidity).
+* Good at describing relationships and associations, interpretable.
+* Predictions: GLMs are an "outdated" way to make predictions, more popular models tend to be nonparametric, require fewer assumptions.
+
+
+Notation
+========================================================
+
+There are three components to a GLM:
+
+### Random Component
+- Response/outcome variable Y, N observations:
+- $f(y_i|\theta_i) = a(\theta_i)b(y_i)\exp\{y_iQ(\theta_i)\}$
+- $Q(\theta_i)$ is the **natural parameter**
+
+### Systematic Component
+- The "linear model" part.
+- $\eta_i = X_i\beta$
+
+### Link Function
+- Connects the mean of the original response scale to the systematic component
+- $\mu_i = E[Y_i|X_i]$
+- $\eta_i = g(\mu_i) = X_i\beta$
+- $g(\mu_i)$ is the link function
+
+Example 1: Binomial Logit (ie, Logistic Regression)
+========================================================
+- For binary outcome data
+- $Pr(Y_i = 1) = \pi_i = E(Y_i|X_i)$
+- $f(y_i|\theta_i) = \pi^{y_i}(1-\pi_i)^{1-y_i} = (1-\pi_i)\Big(\frac{\pi_i}{1-\pi_i}\Big)^{y_i} = (1-\pi_i)\exp\Big\{y_i\log\frac{\pi_i}{1-\pi_i}\Big\}$
+- Where:
+    * $\theta = \pi_i$
+    * $a(\pi_i) = 1-\pi_i$
+    * $b(y_i) = 1$
+    * $Q(\pi_i) = \log\Big(\frac{\pi_i}{1-\pi_i}\Big)$
+- The natural parameter $Q(\pi_i)$ implies the canonical link function: $\text{logit}(\pi) = \log\Big(\frac{\pi_i}{1-\pi_i}\Big)$
+
+Example 2: Poisson 
+========================================================
+- For count outcome data
+- $Y_i \sim Pois(\pi_i)$\
+- $f(y_i|\mu_i) = \frac{e^{-\mu_i} \mu_i^{y_i}}{y_i !} = e^{-\mu_i} \Big(\frac{1}{y_i}\Big)\exp\{y_i \log \mu_i\}$
+- Where:
+    * $\theta = \mu_i$
+    * $a(\mu_i) = e^{-\mu_i}$
+    * $b(y_i) = \Big(\frac{1}{y_i}\Big)$
+    * $Q(\mu_i) = \log \mu_i$
+    
+Back to Logistic Regression
+========================================================
+- For "simple" one predictor case:
+$$\text{logit}(\pi_i) = \text{logit}[Pr(Y_i = 1|X_i)] = \beta_0 + \beta_1x_{i1}$$
+- The graphs below depict the correspondence between the linear systematic component and the logit link
+
+```{r, fig.height = 3.5}
+x <- seq(from = 0, to = 20, by = 0.01)
+# downward sloping model
+b0a <- 10
+b1a <- -1
+ya <- b0a + b1a*x
+#u upward sloping model
+b0b <- -10
+b1b <- 1
+yb <- b0b + b1b*x
+
+# probabilities
+proba <- exp(ya)/(1 + exp(ya))
+probb <- exp(yb)/(1 + exp(yb))
+
+{par(mfrow = c(1,2))
+# log odds plot
+plot(1, type="n", xlab="", ylab=expression(paste("Log-odds scale, logit(",pi[i],")",sep="")),
+     xlim=c(0,20), ylim=c(-10, 10))
+abline(a = b0a, b = b1a, col = "blue")
+abline(a = b0b, b = b1b, col= "red")
+abline(h = 0, lty = "dotted")
+text(16, 8, expression(paste(beta[1], " > 0",sep="")))
+text(16, -8, expression(paste(beta[1], " < 0",sep="")))
+
+# add prob plot
+plot(1, type="n", xlab="", ylab=expression(paste("Probability scale, ",pi[i],sep="")),
+     xlim=c(0,20), ylim=c(0, 1))
+
+points(x,proba,col="blue",cex = 0.05,pch=".")
+points(x,probb,col="red",cex = 0.05,pch=".")
+
+text(16, 0.9, expression(paste(beta[1], " > 0",sep="")))
+text(16, 0.1, expression(paste(beta[1], " < 0",sep="")))
+par(mfrow = c(1,1))}
+
+```
+
+
+Coefficient Interpretation
+========================================================
+
+- A useful exercise everyone should do is write out what it means for their to be a one-unit change.
+- This will be done for logistic regression.
+- The value of the logit at a value $X_i= k$ is given by:
+
+$$\text{logit}(Pr(Y_i = 1 |X_i = k)) = \beta_0 + \beta_1k$$
+
+- A one unit increase $k + 1$ is:
+
+$$\text{logit}(Pr(Y_i = 1 |X_i = k + 1)) = \beta_0 + \beta_1(k + 1)$$
+
+- Subtracting the first equation from the second:
+
+$$\text{logit}(Pr(Y_i = 1 |X_i = k + 1)) - \text{logit}(Pr(Y_i = 1 |X_i = k)) = \beta1$$
+- The difference of logits can be expressed as follows:
+
+$$\log\Big\{\frac{odds(Pr(Y_i|X_i = k + 1))}{odds(Pr(Y_i|X_i = k))}  \Big\}=\beta1$$
+- The argument of the $\log$ function in the preceding equation is the **odds ratio**. 
+- So we can write $\log OR = \beta1$ or $\log OR = e^{\beta1}$.
+- A one-unit increased in $X_i$ implies the $OR$ changes by a factor of $e^{\beta1}$.
+
+Note: this type of question is bread and butter for the midterm!
+
+
+GLM Likelihood
+========================================================
+- The GLM likelihood function is given as follows:
+$$f(y | \theta, \phi) = \exp\Big\{\frac{y\theta - b(\theta)}{a(\phi)} + C(y, \phi) \Big\}$$
+
+- Here $\phi$ is a dispersion parameter, allows for more than one parameter.
+
+$$L(\overset{\rightharpoonup}{\beta}) = \Sigma_iL_i = \Sigma_i \log f(y_i|\theta_i, \phi) = \sum_i \frac{y_i\theta_i - b(\theta_i)}{a(\phi)} + \Sigma_i C(y_i, \phi)$$
+
+* $\theta_i$ is the $\beta X_i$ from $\eta_i$
+
+* $\phi$ not indexed by $i$, assumed to be fixed.
+
+
+
+Likelihood/Score Equations
+========================================================
+
+The maximum of the multivariate log-likelihood can be found by solving the **score equations** below:
+
+$$ \frac{\partial L(\overset{\rightharpoonup}{\beta}) }{\partial \beta_j} = \sum_i\frac{\partial L_i}{\partial \beta_j} = 0, \forall j$$
+
+$$ \sum_{i=1}^N\frac{(y_i - \mu_i)x_{ij}}{Var(Y_i)}\frac{\partial \mu_i}{\partial \eta_i} = 0$$
+
+Where $\mu_i = E[Y_i|x_i] = g^{-1}(X\beta)$.
+
+- There is no easy way to solve this!
+- Statistical software does this by iteratively refining estimates of parameters until convergence is achieved.
+
+
+Likelihood Example: Binomial
+========================================================
+
+$$\frac{\partial L(\overset{\rightharpoonup}{\beta})}{\partial \beta_j} = \Sigma_i (y_i - n_i\pi_i)x_{ij} $$
+Here, $\pi_i = \frac{e^{X_i\beta}}{1 + e^{X_i\beta}}$.
+
+A "top down" view of the likelihood function is sketched out below. The black dot in the center marks the "peak" that maximized the likelihood.
+
+```{r}
+# code adapted from the following StackExchange response:
+# https://stackoverflow.com/questions/43024697/how-to-create-concentric-ellipses-in-r-plot
+
+library(plotrix)
+{plot(1, ty='n', xlab = expression(beta[1]), ylab = expression(beta[2]), axes = FALSE)
+axis(1,labels=FALSE)
+axis(2,labels=FALSE)
+# code to create concentric ovals
+draw.ellipse(x= rep(1,9), y= rep(1,9), a= seq(.1, .9, by = .1), b= seq(.05, .45, by = .05), angle = 45, lty = 2)
+points(1,1,pch=19)
+}
+```
+
+
+
+Asymptotic Convergence of the MLE Estimate $\hat{\beta}$
+========================================================
+
+- The likelihood function determines the covergence of $\hat{\beta}$.
+- The information matrix, $\mathcal{I}$, has $hj$ elements
+
+$$ \mathcal{I} = E\Big[\frac{-\partial^2 L(\overset{\rightharpoonup}{\beta})}{\partial \beta_h \beta_j} \Big] = \sum_{i = 1}^N \frac{x_{ih}x_{ij}}{Var(Y_i)} \Big(\frac{\partial \mu_i}{\partial \eta_i} \Big)^2 = \sum_{i=1}^N x_{ih}x_{ij}w_i$$
+Where
+
+$$w_i = \frac{1}{Var(Y_i)} \Big(\frac{\partial \mu_i}{\partial \eta_i} \Big)^2$$
+
+Thus, if matrix $W$ is a diagonal matrix with $w_i$ as a diagonal element, $\mathcal{I} = X^TWX$.
+-Here $X$ is a $p \times n$ and $W$ is $n \times n$.
+
+Properties of the $\hat{\beta}$ Estimators
+========================================================
+- For simple linear regression: $Var(\hat{\beta}_1) = \frac{\hat{\sigma}^2}{\sum_{i=1}^N(x_i-\bar{x})^2}$
+- Matrix notation: $Cov(\hat{\beta}_1) = \hat{\sigma}^2(X^TX)^{-1}$
+- For GLMs:  $Cov(\hat{\beta}_1) = \hat{\mathcal{I}}^{-1} = (X^TWX)^{-1}$ 
