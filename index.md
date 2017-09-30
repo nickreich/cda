@@ -16,7 +16,7 @@ This course provides an overview of statistical methods for analyzing data where
 
 **Instructor**: [Nicholas Reich](http://reichlab.io)
 
-**Office hours**: Tuesday 3-4pm
+**Office hours**: Tuesday 2:30-3:30pm
 
 **Prerequisites**: BIOSTATS 540 (Intro Biostatistics), STAT 515 (Intro Statistics I), STAT 516 (Intro Statistics II), BIOSTATS 650/STAT 525 (both of these are courses on linear regression), or equivalent coursework. Prior programming experience is required. If you have not taken some of the listed pre-requisites but still think the course is the right choice for you, you may petition the instructor directly for permission to enroll in the course.
 
