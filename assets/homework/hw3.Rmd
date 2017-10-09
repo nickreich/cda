@@ -36,6 +36,10 @@ ROC curve
 
 rstanarm
 
+Exercise 5.8 (about smoothing)?
+
+Compare penalized likelihood to bayesian 2x2 table simulation?
+
 ## Question 3
 
 conditional logit
