@@ -20,9 +20,9 @@ Week |       |     | Topic   | Notes | HW Due | Reading
  8   |     | 24, 26 | Negative Binomial, zero-inflation | || CDA 13
  9   | Nov | 31, 2  | [Paper presentations](paper-presentations.html) | |  | CDA 14
  10  |     | 7, 9   | Midterm review and exam | | | 
- 11  |     | 14, 16 | Non-model based CDA |  | HW4 | 
+ 11  |     | 14, 16 | Non-model based CDA |  |  | 
      |     | 21, 23 | Thanksgiving | || 
- 12  |     | 28, 30 | | || 
+ 12  |     | 28, 30 | | | HW4 | 
  13  | Dec | 5, 7   | CDA History/Projects | || 
  14  |     | 12     | Projects | || 
 
