@@ -19,5 +19,4 @@ A few examples of papers that would be appropriate:
 
  - https://www.ncbi.nlm.nih.gov/pubmed/27147815
  - http://www.sciencedirect.com/science/article/pii/S0264410X17308666
- - 
  
