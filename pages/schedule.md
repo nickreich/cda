@@ -14,7 +14,7 @@ Week |       |     | Topic   | Notes | HW Due | Reading
  2   |     | 12, 14  &nbsp;| Contingency tables/GLMs | [Lec 3](../assets/slides/lec3-contingency-tables-continued/lec3-contingency-tables-continued.pdf), [Lec 4](../assets/slides/lec4/lec4-contingency-tables.pdf) | | CDA 2-3
  3   |     | 19, 21 | Intro to GLMs | [Lec 5](../assets/slides/lec5-glms/lec5-glms.pdf), [Lec 6](../assets/slides/lec6/lec6.pdf) | [HW1](../assets/homework/hw1.pdf) | CDA 4-6
  4   |     | 26, 28 | Logistic/Poisson GLMs | [Lec 7](../assets/slides/lec7/lec7.pdf), [Lec 8](../assets/slides/lec8/Lecture_8.pdf) | | CDA 9
- 5   | Oct | 3, 5   | Logistic/Multinomial GLMs |  |[HW2](../assets/homework/hw2.pdf) | CDA 7-8
+ 5   | Oct | 3, 5   | Logistic/Multinomial GLMs | [Lec 10](../assets/slides/lec10/lec10.pdf)  |[HW2](../assets/homework/hw2.pdf) | CDA 7-8
  6   |     | 12     | Intro to clustered data | || CDA 12
  7   |     | 17, 19 | Clustered data | | [HW3](../assets/homework/hw3.pdf) | CDA 12-13
  8   |     | 24, 26 | Negative Binomial, zero-inflation | || CDA 14
