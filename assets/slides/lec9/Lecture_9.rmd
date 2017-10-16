@@ -1,0 +1,236 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\title{Lecture 9}
+\author{Casey Gibson }
+\date{October 2017}
+
+\begin{document}
+
+\maketitle
+
+\subsubsection*{Smoothing (Agresti. 7.4)}
+
+\begin{itemize}
+    \item Kernel Smoothing
+    \item Penalized likelihood
+    \item GAMS
+\end{itemize}
+
+\subsubsection*{Bias-Variance trade-off}
+Fundamental question about choice of statistical models
+
+\begin{itemize}
+    \item Parametric models:
+    \begin{itemize}
+        \item Represent data 'parsimoniously' (with few parameters)
+        \item good for variability of estimates
+        \item Bad if model is wrong
+        \item 'bad for bias, good for variance'
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \item Less Parametric models (e.g. smoothers)
+    \begin{itemize}
+       \item non-parametric
+       \item semi-parametric
+    \end{itemize}
+    
+    \item less likely to be biased b/c less structure 
+    \item more uncertainty/variability in estimates
+    
+\end{itemize}
+
+
+\textbf{Example 3.3.8}
+\begin{itemize}
+    \item Illustrates a situation where even when the model is wrong the MSE is lower for the parametric model than a non-parametric model
+    \item Takeaway: a little miss-specification can be okay, but a lot is bad
+\end{itemize}
+
+
+
+
+\subsubsection*{Smoothing}
+
+\begin{itemize}
+\item Why smooth?
+    \begin{itemize}
+        \item Exploratory analysis
+        \item more concerned about bias than variance (large $N$)
+        \item simple way to 'gently' relax the assumptions of your model
+        
+    \end{itemize}
+\item Main examples
+\begin{itemize}
+    \item Kernel Smoothing
+    \item Penalized likelihood
+    \item GAMS
+\end{itemize}
+\end{itemize}
+
+
+\subsubsection*{Kernel Smoothing}
+\begin{itemize}
+    \item Contingency Table
+    \begin{itemize}
+        \item Joint cell probabilities $\vec{\pi}$
+        \item sample probabilities $\vec{p}$
+        \item Suppose we are interested in $\tilde{\pi}$, smoothed estimates of $\vec{\pi}$
+        \item We can do this using a smoothing matrix $K$ where $\tilde{\pi} = Kp$, square, non-negative elements, column totals sum to 1 $\rightarrow \sum_{j}\pi_j = 1$
+    \end{itemize}
+\end{itemize}
+
+
+\textbf{Specifically}
+
+$$\tilde{\pi_i} = (1-\lambda)p_i + \lambda*[smoother_i]$$
+
+where $smoother_i$ is defined by $K$.
+
+
+For example, it could be average of near-by cells.
+
+
+We can see that if $\lambda = 0$
+$$\tilde{\pi_i} = p_i$$
+or if $\lambda = .5$
+
+$$\tilde{\pi_i} = p_i + \frac{smoother_i}{2}$$
+
+
+\begin{itemize}
+    \item Regression context
+    \begin{itemize}
+        \item Smoothing across an X
+        \item $\tilde{\pi(x)} = \frac{\sum_i y_i \phi(\frac{x-x_i}{\lambda})}{\sum_i  \phi(\frac{x-x_i}{\lambda})}$
+        \item $\phi$ is a symmetric kernel function
+        \begin{itemize}
+            \item $\int_{-\infty}^{\infty}K(u)du =1$
+            \item $K(-u) = K(u) \forall u$
+            \item Example: Gaussian kernel $K(u) = e^{\frac{1}{2\sigma^2}(u-\mu)^2}$
+            
+        \end{itemize}
+        \item $\lambda > 0$ is smoothing parameter
+       \item \textbf{Takewaway}: Take a weighted sum of all of my $ys$ where the weight  is proportional to the similarity of the test $x$ to the $xs$ in the data
+    \end{itemize}
+\end{itemize}
+
+
+\textbf{Example 1}
+
+If $\phi(u) = 1 if u=0, 0 otherwise$ 
+
+If 
+\begin{center}
+$\begin{cases}
+1 & u=0\\
+0 & otherwise
+\end{cases}$
+\end{center}
+
+then
+\begin{center}
+  $\tilde{\pi(x_k)}=$ sample proportion of successes when $X=X_k$  
+\end{center}
+
+
+\textbf{Example 2}
+
+$$\phi(i)=exp(\frac{-u^2}{2})$$
+Equivalent to $N(0,1)$
+
+
+
+$$\tilde{\pi(x)} = \sum_i y_i exp(-\frac{1}{2}\frac{(x-x_i)^2}{\lambda})$$
+
+As $\lambda \rightarrow 0 $ we approach no smoothing which implies low bias $\pi(x)$. We only have a few data points being used to estimate in a neighborhood around $x$. 
+
+\subsubsection*{Penalized Likelihood (7.4.5)}
+Is a 
+\begin{itemize}
+\item`regularization` method
+\item `smoothing` method
+\itiem `penalization` method
+\item `shrinkage` method
+\end{itemize}
+
+$$L^*(\beta) = L(\beta) - \lambda(\beta)$$
+
+
+Where $\lambda(\beta) = p(\beta,\lambda)$
+
+Very general and broad approach for giving sensible estimates for parameters/characteristics that are unstable.
+
+
+
+\subsubsection*{Commonly used penalizations}
+
+$$L_2-norm \ penalty : \lambda(\beta) = \lambda \sum_j \beta_j^2$$ 
+
+$$L_1-norm \ penalty : \lambda(\beta) = \lambda \sum_j |\beta_j|$$ 
+
+Similar to maximizing likelihood subject to the constraint that $$\sum_j |\beta_j| \leq K$$
+
+$$L_0-norm \  penalty: \lambda(\beta) = K \sum_j \textbf{1}(|\beta_j| >0)$$
+
+penalty proportional to how many $\betas$ are not 0.
+
+$AIC$ and $BIC$ are special cases of this.
+
+
+Difficult to optimize for large $J$.
+
+
+How to choose $\lambda$?
+
+\begin{itemize}
+    \item K-fold cross validation
+    \begin{itemize}
+        \item fix $\lambda$
+        \item leave out $\frac{1}{kth}$ of dataset
+        \item Fit your model, predict for the left out data 
+        \item repeat steps 1-2 until we have out of sample predictions for the whole dataset
+        \item Compute some error for $\lambda$
+        \item Repeat for new $\lambda s$
+        \item Choose $\lambda_i$ that minimizes error
+    \end{itemize}
+\end{itemize}
+
+
+Penalized likelihood $\approx$ Bayes
+
+If our prior for $\beta \propto e^{-\lambda(\beta)}$ then 
+$posertior(\beta) \propto L^*(\beta)$ so posterior mode = mdoe of $L^*(\beta)$
+
+\subsubsection*{Generalized Additive Models}
+
+$$g(\mu_i)$$ where $g$ is a link and $\mu_i$ is a mean
+
+$$g(\mu_i) = \sum_j s_j(x_{ij})$$
+
+where $s$ is a smooth function, i.e. a cubic spline
+
+\begin{itemize}
+     
+\item GLMS are a special case when $s_j$ are linear.
+
+\item Models are fit using a "back fitting algorithm"
+
+\item Similar to Newton-Raphson w/ local smoothing
+
+\item Penalized likelihood that penalizes "wiggliness" of function.
+
+
+\item Approximate d.f. for each $\hat{s_j$ which allows for deviance tests for nested models 
+
+\item These models are more flexible than GLMs but are also much less interpret-able. 
+
+
+\item Note: In $R$ the $mgcv$ package is able to estimate GLMs  
+
+\end{itemize}
+
+\end{document}
+
