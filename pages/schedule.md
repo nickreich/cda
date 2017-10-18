@@ -16,7 +16,7 @@ Week |       |     | Topic   | Notes | HW Due | Reading
  4   |     | 26, 28 | Logistic/Poisson GLMs | [Lec 7](../assets/slides/lec7/lec7.pdf), [Lec 8](../assets/slides/lec8/Lecture_8.pdf) | | CDA 9
  5   | Oct | 3, 5   | Logistic/Multinomial GLMs | [Lec 9](../assets/slides/lec9/Lecture_9.pdf), [Lec 10](../assets/slides/lec10/lec10.pdf)  |[HW2](../assets/homework/hw2.pdf) | CDA 7-8
  6   |     | 12     | Intro to clustered data | [Lec 11](../assets/slides/lec11/lec11.pdf)  || CDA 12, ARM 11-12
- 7   |     | 17, 19 | Clustered data | | [HW3](../assets/homework/hw3.pdf) | CDA 12-13, ARM 13-15
+ 7   |     | 17, 19 | Clustered data | [example](../assets/code/poisson-glmm-simulation.html) | [HW3](../assets/homework/hw3.pdf) | CDA 12-13, ARM 13-15
  8   |     | 24, 26 | Negative Binomial, zero-inflation | || CDA 14
  9   | Nov | 31, 2  | [Paper presentations](paper-presentations.html) | |  | 
  10  |     | 7, 9   | Midterm review and exam | | | 
