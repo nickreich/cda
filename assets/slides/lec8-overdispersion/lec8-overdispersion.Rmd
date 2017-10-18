@@ -1,0 +1,63 @@
+---
+title: "Overdispersion"
+author: "Jonathan Moyer and Heather Weaver, based on Agresti Ch 4"
+date: "September 28, 2017"
+header-includes:
+   - \usepackage{amsmath}
+output:
+  pdf_document: 
+    includes:
+      in_header: ../../slide-includes/shortcuts.tex
+    keep_tex: yes
+  beamer_presentation:
+    includes:
+      in_header: ../../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+Overdispersion
+========================================================
+
+- Poisson model: 
+
+\begin{align*}
+y_i &\sim Poisson(\lambda_i) \\
+E[y_i] &= \lambda_i \\
+V(y_i) &= \lambda_i
+\end{align*}
+
+- GLM estimation notation
+
+\begin{align*}
+\mu_i &= E(y_i) \\
+V(\mu_i) &= \phi V(y_i) = \phi \mu_i (\text{for Poisson})
+\end{align*}
+
+- When $\phi > 1$, there is overdispersion in the model
+
+Likelihood Equations
+========================================================
+
+\begin{equation*}
+\sum_{i=1}^N\frac{(y_i - \mu_i)x_{ij}}{\phi V(y_i)}\frac{\partial \mu_i}{\partial \eta_i} = 0, \text{for $j = 1, ..., p$}
+\end{equation*}
+
+- These depend on the distribution of $y$ through $\mu$, $V(y)$
+- Having $1/\phi$ in these equations doesn't change the MLE for the $\beta$'s.
+- However, with overdispersion the covariance changes:
+
+\begin{equation*}
+Cov(\hat{\beta}) = (X^TWX)^{-1} = \phi Cov(\hat{\beta})
+\end{equation*}
+
+- $W$ is a matrix with diagonal elements $w_i$ such that:
+
+\begin{equation*}
+w_i = \frac{\Big(\frac{\partial \mu_i}{\partial \eta_i}\Big)^2}{V(y_i)} = \frac{\Big(\frac{\partial \mu_i}{\partial \eta_i}\Big)^2}{\phi \mu_i)} \text{(for Poisson)}
+\end{equation*}
