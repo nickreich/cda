@@ -1,0 +1,91 @@
+---
+title: "Poisson random effects simulation"
+author: "Nicholas G Reich"
+date: "October 18, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+## setup
+```{r}
+library(dplyr)
+library(ggplot2)
+library(lme4)
+library(gridExtra)
+theme_set(theme_minimal())
+```
+
+## Overview
+We will simulate data from 100 groups, assuming that the data generation process is a GLMM. Half of the groups will have 2 observations, half will have 40 observations.  We will estimate the model using a GLM with fixed effects for group and a GLMM with random effects for group. 
+
+
+### data generation
+```{r}
+set.seed(880)
+n_groups <- 50
+means <- rnorm(n_groups, 0, 2)
+overall_mean <- 0
+ymin <- -4
+ymax <- 4
+
+## generate data
+dat <- data_frame(
+    group_id = rep(1:n_groups, rep(c(2, 40), each=n_groups/2)),
+    y = rpois(length(group_id), exp(overall_mean + means[group_id])),
+    true_u = means[group_id],
+    true_mean = exp(overall_mean + means[group_id])
+)
+```
+
+
+### fitting models
+```{r}
+## raw group means model
+raw_means <- dat%>% group_by(group_id) %>%
+    summarize(
+        avg_y = mean(y), 
+        sd_y = sd(y)
+    )
+
+fit_glm <- glm(y~factor(group_id)-1, data=dat, family="poisson")
+
+fit_glmm <- glmer(y~(1|group_id), data=dat, family="poisson")
+
+
+## assemble data for comparison
+means_compare <- data_frame(
+    group_id = 1:n_groups,
+    glmm_means_log = predict(fit_glmm, newdata=data.frame(group_id=1:n_groups)),
+    glm_means_log = predict(fit_glm, newdata=data.frame(group_id=1:n_groups)),
+    true_u = means[group_id],
+    size = ifelse(group_id<=(n_groups/2), "small", "big")
+) %>% left_join(raw_means)
+
+a <- ggplot(means_compare, aes(x=true_u, y=glmm_means_log, yend=glm_means_log, color=size)) +
+    geom_segment(aes(xend=true_u)) + geom_abline(aes(slope=1, intercept=0),linetype=2, color="grey") +
+    geom_point(aes(shape='x'), size=5) + ylab("est. group mean, log scale") + xlab("true u_i") +
+    geom_point(aes(y=glm_means_log, shape='o'), size=5) +
+    scale_shape_manual(name="Model", labels=c("GLM", "GLMM"), values=c('x'='x', 'o'='o')) +
+    scale_color_discrete(name="Group size", labels=c("big (N=40)", "small (N=2)")) +
+    ggtitle("Estimated means: GLMM vs GLM")
+
+b <- ggplot(means_compare, aes(x=true_u, y=glmm_means_log, yend=log(avg_y), color=size)) +
+    geom_segment(aes(xend=true_u)) + geom_abline(aes(slope=1, intercept=0),linetype=2, color="grey") +
+    geom_point(aes(shape='x'), size=5) + ylab("est. group mean, log scale") + xlab("true u_i") +
+    geom_point(aes(y=glm_means_log, shape='o'), size=5) +
+    scale_color_discrete(name="Group size", labels=c("big (N=40)", "small (N=2)"))+
+    scale_shape_manual(name="Model", labels=c("log(raw mean)", "GLMM"), values=c('x'='x', 'o'='o')) +
+    ggtitle("Estimated means: GLMM vs raw mean")
+grid.arrange(a, b, nrow=2)
+```
+
+These figures plot the estimated group-level means (GLMM estimated BLUPs are marked with X), and draw a line between the GLMM BLUP and the group mean estimated by GLM (left) or the raw data (right). The value on the x-axis is the true $u_i$ or group-level random effect.
+
+## Comments/questions
+
+1. Can you write down the GLMM model that was used to generate the data?
+2. For which types of clsuters are GLMM estimates closer to the $y=x$ line than either of the raw means or GLM estimates? Why does GLMM do better in this situation?
+3. What are the actual observed group means for the groups that "shrink" the most? Why do the blue groups shrink more than the red groups?
