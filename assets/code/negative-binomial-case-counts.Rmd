@@ -1,0 +1,134 @@
+---
+title: "Using a Negative Binomial model for infectious disease case counts"
+author: "Nick Reich, adapted from work by Steve Lauer et al"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+## Introduction to the data
+
+This analysis is based on research that is [publicly available on GitHub](https://github.com/reichlab/annual-predictions-paper). The code and description have been adapted for this write-up.
+
+
+```{r, echo=FALSE}
+dat <- read.csv("dengue-data.csv")
+str(dat)
+```
+
+### Visualize the data
+
+## Modeling
+
+### Negative binomial model
+
+The model that we used to forecast annual DHF incidence for this study is a generalized additive model \cite{Hastie2009}.
+Specifically, we use a generalized additive model with a negative binomial family, separate penalized smoothing splines for each covariate, and province-level random effects:
+
+$$    Y_{i,t} \sim \text{NB}(n_{i,t}\lambda_{i,t}, r) $$
+$$    \log \Big [ \mathbf{E}(Y_{i,t}) \Big ] = \beta_0 + \log(n_{i,t}) + \alpha_i + \sum_{j=1}^J g_j(x_{j,i,t}|\boldsymbol{\theta}) $$
+$$     \alpha_i \sim \text{Normal}(\mu, \sigma^2) $$
+
+\noindent We model the incidence ($Y_{i,t}$) for province $i$ in year $t$ as following a negative binomial distribution with the mean equal to the province population ($n_{i,t}$) times the incidence rate ($\lambda_{i,t}$) and a dispersion parameter $r$.
+After a log transformation, we model the mean of this distribution using an intercept ($\beta_0$), a random effect for each province ($\alpha_i$) and a cubic spline for each of $J$ covariates ($g_j(x_{j,i,t}|\boldsymbol{\theta})$).
+
+Let's fit a model and look at the results.
+```{r}
+library(mgcv)
+fmla <- formula("obs ~ offset(log(population)) + 
+                s(pid, bs = 're') + 
+                s(pre_season_rate, k = 3, m=2, bs = 'cr') +
+                s(Jan_temp_grid, k = 3, m=2, bs = 'cr') +
+                s(last_high_rate, k = 3, m=2, bs = 'cr')")
+mod_nb <- gam(fmla, data = dat, family = nb())
+summary(mod_nb)
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(mod_nb)
+```
+
+### A few Poisson models for reference
+```{r}
+mod_ref <- glm(obs ~ offset(log(population))+1, data = dat, family = poisson)
+mod_randint <- gam(obs ~ offset(log(population)) + s(pid, bs = 're'), data = dat, family = poisson)
+mod_pois <- gam(fmla, data = dat, family = poisson)
+summary(mod_pois)
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(mod_pois)
+```
+
+### Compare the Poisson and NB fits
+
+### Interpret NB parameters
+
+### Predictive model checking
+
+## Obtaining predictive distribution
+
+```{r}
+#' Prediction intervals for negative binomial GAM regression
+#' Randomly samples the multivariate normal distribution of the coefficient parameters and draws from a negative binomial distribution to create prediction intervals for a GAM spline of the negative binomial family.
+#'
+#'
+#' @param train_fit gam object from mgcv's gam(), conducted with family = nb()
+#' @param test_dat data to make predictions on
+#' @param coef_perms number of normally distributed coefficient permutations
+#' @param nb_draws number of draws from a negative binomial for each coefficient permutation
+pred_dist <- function(train_fit,
+                      test_dat,
+                      coef_perms,
+                      nb_draws){
+    require(mgcv)
+    if(missing(nb_draws))
+        nb_draws <- coef_perms
+    ## get the mean and covariance matrix for predictions on the testing data
+    test_preds <- predict(train_fit, test_dat, type = "lpmatrix")
+    ## replicate parameter vectors
+    rep_params <- rmvn(coef_perms,coef(train_fit),train_fit$Vp)
+    pred_count <- matrix(0, nrow=nrow(test_dat), ncol=coef_perms)
+    ## replicate predictions for each set of parameters
+    for (i in 1:coef_perms) {
+        rep_preds <- test_preds %*% rep_params[i,]
+        pred_count[,i] <- exp(rep_preds)*test_dat$population
+    }
+    ## find the dispersion parameter for the negative binomial
+    r <- train_fit$family$getTheta(trans=TRUE)
+    ## sample from the negative binomial distribution
+    all_preds <- matrix(rnbinom(nrow(pred_count)*coef_perms*nb_draws,
+                                mu=as.vector(pred_count), size=r),
+                        nrow=nrow(test_dat)) %>%
+        as.data.frame()
+    return(all_preds)
+}
+noaa_preds <- pred_dist(train_fit=train_noaa_fit,
+                        test_dat=noaa_test,
+                        coef_perms=coef_perms,
+                        nb_draws=nb_draws)
+
+prediction_dat <- data_frame(year = noaa_test$year,
+                             pid = noaa_test$pid,
+                             formula = noaa_eqn,
+                             group = 3,
+                             model_covs = paste(vars, collapse=","),
+                             num_cov = length(vars),
+                             obs_counts = noaa_test$obs) %>%
+    bind_cols(noaa_preds) %>%
+    gather("sim", "pred_counts", starts_with("V")) %>%
+    filter(!is.na(pred_counts))
+
+
+```
+
+To obtain predictive distribution samples, we use a two-stage procedure to incorporate the uncertainty from our model parameter estimates and from the negative binomial distribution.
+We first draw 100 sample parameter sets from a multivariate normal distribution with mean equal to the point estimates of the parameters ($\boldsymbol{\theta}, \mu, \sigma^2$) from Equations (\ref{eqn:regression})-(\ref{eqn:RE}) and covariance equal to the matrix of standard errors.
+Each of these sampled parameter sets yields a corresponding $\widehat{\lambda}_{i,t}$.
+We then draw 100 samples from the negative binomial distribution given in Equation (\ref{eqn:NB}) for each $\widehat{\lambda}_{i,t}$ with the fixed estimate of $r$ to obtain a sample of size 10,000 from the predictive distribution for $Y_{i,t}$.
+We calculate the point estimate for each province-year, $\widehat Y_{i,t}$, as the median of these samples from the predictive distribution.
+The lower and upper limits of the 80\% prediction intervals were defined by taking the 10$^{th}$ and 90$^{th}$ percentiles of these samples from the predictive distribution.
