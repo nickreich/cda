@@ -1,0 +1,149 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\title{Oct 17th CDA}
+\author{Casey Gibosn & Joshua Freeman }
+\date{October 2017}
+
+\begin{document}
+
+\subsection*{GLMMs}
+
+\begin{itemize}
+    \item estimation
+    \item DF
+    \item interpretation 
+    \item example
+    \item overdispersion
+\end{itemize}
+
+Why we use GLMMs (Applied Regression Modelling) (Gelman & Hill 11.5)
+
+(Ruppert, Wand, Caroll, Sempiparametric Regression)
+
+\begin{itemize}
+    \item interested in estimating group=level regression coefficients that account for individual + group level variation
+    \item Allow us to model individual-level coefficients parsimoniously 
+    \item estimating regression coefficients for particular groups. Especially relevant when group size is small
+    \begin{itemize}
+        \item GLMMs are best when number of groups $>$ 5
+        \item best when there is a lot of variation across groups
+    \end{itemize}
+\end{itemize}
+
+
+
+\subsection*{GLMMS Notation}
+Recipe for GLMM:
+\begin{itemize}
+    \item GLM-like formulation
+    \begin{itemize}
+        \item $g(E(Y_{ij}| u_i)) = X_{ij}^T\beta + Z_{ij}^Tu_i$
+        \item $g$ is a glm link 
+        \item $Y_{ij}$ is $jth$ observation in $ith$ group
+        \item $u_i$ is random effects for the $ith$ group
+        \item $dim(X_{ij}^T) = (1,p)$ & $dim(Z_{ij}^T) = (1,q)$
+        
+    \end{itemize}
+    \item $y_{ij} | u_i \sim f$ for $f \in \text{exponential family}$
+    \item $u_i\sim N(0,G_\theta)$
+\end{itemize}
+
+
+\subsection*{Estimation}
+$L(\beta,\theta) = f(\vec{y} | \beta \theta)$
+$$ = \int_{R^q} f(\vec{y} | u,\beta)f(u)du \text{            (*)}$$
+
+\subsection*{Two main methods}
+\begin{itemize}
+    \item Laplace approximation of $*$
+    \begin{itemize}
+        \item Use partial quasilikleihood 
+        \item Laplace approximation to ingeral 
+        \item Uses NR-like techniques, with a penalty on the coefficients 
+    \end{itemize}
+    \item Bayesian MCMC methods to sample from posterior distribution of $\beta$ and $\theta$
+\end{itemize}
+
+\subsection*{Degrees of Freedom}
+ Extension of hat matrix to
+ 
+ For GLM
+ 
+$$ $trace(H_b)$$
+ 
+ For GLMM 
+ 
+ $$trace(H_{\beta,\theta}) \leq p + n*q$$
+ 
+ this is sometimes called "effective" df.
+ 
+ 
+ \textbf{Example}
+ 
+ Spinal implant procedure. Patients receive procedure and have follow up visits 1 and 2 days after. Binary outcome measuring success ("no pain") or failure ("pain").
+ 
+ 
+ $$y_{ij} = \begin{cases}
+    1 & \text{if patient i at visit j has no pain} \\
+    0 & \text{if patient i at visit j has pain}
+ \end{cases}$$
+
+ $$x_j = \begin{cases}
+    1 & \text{j=2 ,if patient's second visit} \\
+    0 & \text{j=1,if pateint's first visit}
+ \end{cases}$$
+
+\begin{center}
+$\begin{matrix}
+ & \text{No Pain} & \text {Pain}\\
+ \text{No pain} & 63 & 16 \\ 
+ \text{pain} & 12 & 35  
+\end{matrix}$
+\end{center}
+
+
+
+\subsection*{Logistic Normal model}
+
+$$logit(Pr(Y_{ij}=1|u_i)) = \alpha +\beta x_i + u_i$$
+$$u_i \sim N(0,\sigma_{u_i}^2)$$
+
+or 
+$$Y_{ij}|u_i \sim Bernoulli(\pi_{ij})$$
+$$\pi_{ij} = logit^{-1}(\alpha + \beta x_j + u_i)$$
+
+$\beta \rightarrow \text{change in log odds of success from visit 1 to 2 for a specific subject}$
+
+or, change in log odds for a subjects w/ same random intercept $u_i$.
+
+$$logit(Pr(Y_i2=1|u_j)) = \alpha + \beta + u_j$$
+$$- logit(Pr(Y_i2=1|u_i)) = \alpha +  u_j$$
+$$=\beta + (u_i + u_j)$$
+
+\begin{center}
+    \includegraphics[scale=.5]{graph.png}
+\end{center}
+
+\subsection*{GLMMs can be used to model overdisperison}
+
+\begin{itemize}
+\item random terms (intercepts) add extra variability to outome
+\item $logit(Pr(Y_{ij}=1 | u_i)) = x\beta + u_i$
+\item $u_i \sim N(0,\sigma_u^2$
+\item $Y_{ij}|u_i \sim Bernoulli(\pi_{ij})$
+\item $Y_{ij}|u_i \sim Poisson(\lambda_{ij})$
+\item $log(\lambda_{ij}) = x\beta + u_i$
+\end{itemize}
+
+
+
+
+
+
+
+
+
+\end{document}
+
