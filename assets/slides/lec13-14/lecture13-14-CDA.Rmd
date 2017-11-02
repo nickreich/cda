@@ -1,16 +1,17 @@
 ---
 title: "Lectures 13-14 Categorical Data Analysis"
-author: "Joshua Freeman, Liz Austin"
+author: "Joshua Freeman, Luke Toomey, Liz Austin"
 output:
-  pdf_document: 
+  word_document: default
+  pdf_document:
     includes:
       in_header: ../../slide-includes/shortcuts.tex
     keep_tex: yes
+  slidy_presentation: default
   beamer_presentation:
     includes:
       in_header: ../../slide-includes/beamer-header-for-pandoc.tex
     keep_tex: yes
-  slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -33,32 +34,32 @@ Mixture models
 Mixture distribution:  A probability distribution formed by a weighted combination of two or more distributions.
 For example:
 
-$$Y_i ~ Binomial(n, \pi_i) for i=1,...,k$$
+$$Y_i \sim Binomial(n, \pi_i) for i=1,...,k$$
 $$f_i(Y) = \left[{\begin{array}{c} n\\y\end{array} } \right] \pi_i^y (1-\pi_i)^{n-y}$$
 
-$Z$ is an equal mixture of all $Y_i$ for which $$f(Z) = \sum_{i=1} f(Z) \frac {f_i(Z)}{K} $$
-The marginal distribution for a whole populatio with subpopulations that folowspecific distributions.
+$Z$ is an equal mixture of all $Y_i$ for which $$f(Z) = \sum_{i=1} \frac {f_i(Z)}{K} $$
+The marginal distribution for a whole population with subpopulations that follow specific distributions.
 
 GLMM -->Mixed effects = both random and fixed effects.  Not for mixture models.
 
-A mixture model is a probabilistic model for representing the presence of subpopulations within the overalll population, i.e.
-another way to account for overdispersion.  Generally, data do not $\underline{NOT}$ provide identifieers of a subpopulation membership.  Estimating groups and group membership.  Subgroups are assured known and we want to get at estimates of characteristics for them.
+A mixture model is a probabilistic model for representing the presence of subpopulations within the overall population, i.e.
+another way to account for overdispersion.  Generally, data do not $\underline{NOT}$ provide identifiers of a subpopulation membership.  Estimating groups and group membership.  Subgroups are assured known and we want to get at estimates of characteristics for them.
 
 
 
 GLMM as a mixture model:  e.g.
 
-##$$Y_{ij} \left[ {\begin{array}{cc} 1&if\ person\ has\ disease\0&otherwise\end{array} } \right] $$
+$$Y_{ij} \left[ {\begin{array}{cc} 1&if\ jth\ child \ to \ ith\ woman\ is\ M\\ 0&if\ jth\ child \ to \ ith\ woman\ is\ F\end{array} } \right]$$
 
 
 
-$$Y_{ij} ~ Bernoulli(\pi_i)$$
+$$Y_{ij} \sim Bernoulli(\pi_i)$$
 $$ \pi_i = logit^{-1}(\alpha_i)$$
-$$\alpha_i ~ N(0, \sigma_x^2)  $$
+$$\alpha_i \sim N(0, \sigma_x^2)  $$
 
 The population level distribution of boy/girl babies is a mixture of $Y_{ij}s$ (plural)
 
-This is not an east close-form solultion for the marginal population-level distribution of boys and girls.  We can at least get at expectation and variance.
+This is not an east close-form solution for the marginal population-level distribution of boys and girls.  We can at least get at expectation and variance.
 
 
 
@@ -71,7 +72,112 @@ $$E(Y) = E[E(Y|X)]$$
 $$Var(Y) = E(V(Y|X)) + V(E(Y|X))$$
 For example:
 
-$$  $$
+$$ E(Y) = E[E(Y|\alpha_i)] $$
+$$ E(Y) = E[logit^{-1}(\alpha_i)] = ?$$
+This is not a closed form solution for this distribution.
+
+
+Beta-Binomial Distribution
+===========================
+
+Conjugate mixture for binary outcome is a model where the marginal distribution has a closed form solution (c.f. "conjugate prior")
+
+$$ (a) Y|\pi \sim Binomial(n, \pi) $$
+$$E(Y|\pi) = n\pi$$
+$$V(Y|\pi)= n\pi(1-\pi) $$
+
+$$(b) \pi \sim Beta(\alpha_1, \alpha_2)$$
+
+$$\mu =\frac {\alpha_1}{\alpha_1+\alpha_2}$$
+$$\theta = \frac{1}{\alpha_1+\alpha_2}  $$
+$$E(\pi)=\mu$$
+$$V(\pi) = \frac {\mu(1-\mu)\theta} {1-\theta} $$
+
+$$E(Y) = E[E(Y|\pi)] = E[n\pi] = n\mu$$
+$$Var(Y)=...(n\mu(1-\mu))(1+(n-1)[\frac{\theta}{1-\theta}])$$
+As $\theta$ approaches 0, $Var(\pi)$ also approaches 0.  Get a single expected value.
+
+Not an exponential family model, but model with logit link.
+
+$$logit(\mu_i) = \alpha + \beta^TX_i$$
+Estimated using Newton-Raphson.
+
+
+Poisson Models for Overdispersion
+=================================
+-Poisson GLM with $\hat{\phi}$ adjustment.
+-Poisson GLMM with normal, random intercepts.
+-Gamma Poisson mixture -->Negative Binomial, Poisson GLMM with non-Normal random intercept.
+
+Poisson GLMM are more flexible alternatives than a Negative-Binomial model.
+
+
+Negative-Binomial as a Gamma-Poisson mixture
+
+$$(a) Y|\lambda \sim Poisson(\lambda) ==> E(Y|\lambda) = \lambda, Var(Y|\lambda) = \lambda$$
+$$(b) \lambda \sim Gamma(K, \mu) ==> E(\lambda) = \mu, Var(\lambda) = \mu^2/K$$
+$$\gamma = 1/K = "dispersion"$$
+$$Y \sim Negative Binomial(K,\mu)$$ 
+$$E(Y) = E[E(Y|\lambda)] - E(\lambda) = \mu$$
+$$V(Y) = E(V(Y|\lambda)) + V(E(Y|\lambda)) = E(\lambda) + V(\lambda) = \mu+\mu^2/K$$
+As $\gamma$ approaches 0 ==> Y $\sim$ Poisson$(\mu)$
+
+
+Compared to Poisson GLM with normal $\mu$
+=========================================
+
+1.  Structural problem with the model
+$$logE(Y_i|\mu_i) = X_{ij}^T\beta + \mu_i, \mu_i \sim N(0, \sigma^2)$$
+2.  Negative Binomial model with fixed $\gamma$ is a GLMM with non-Normal random intercept if $exp{\mu_i} \sim$ Gamma (mean=1, Var=$\gamma$) $Y_ij$ $\sim$ Poisson($\lambda_i$), $log\lambda_i = \alpha_i+ x_{ij}^T \beta, \alpha_i \sim N(0, \sigma^2) = \lambda_i \sim lognormal()$
+
+3.  Poisson GLMM
+
+$$E(Y) = E[E(Y|\lambda)] = E(\lambda)$$
+
+$$\lambda \sim logNormal = exp\frac{\sigma^2}{2} $$
+$$Y_ij \sim Poisson(\lambda_i)$$
+$$log\lambda_i = \alpha_i, \alpha_i \sim N(0, \sigma^2)$$
+
+
+
+
+Lecture 14
+==========
+
+Zero-Inflated Models (See countreg PDF on Google Drive)
+=======================================================
+
+$f_{zero}(y, Z, \gamma)$
+The distribution follows the probability ($\pi$) of count data such that there is an excess number of zeroes clumping together and a Poisson distribution.  What is the probability of following a distribution of Non-zero distribution vs. Zero counts?
+
+For a graphic of the Zero-inflated model distribution, please see:
+https://www.researchgate.net/publication/224040413_Comparing_species_abundance_models (Figure 1)
+
+and 
+
+https://support.sas.com/rnd/app/stat/examples/GENMODZIP/roots.htm (Figure 1)
+
+There are two possible sources of zeroes:
+1.  $f_{zero}$
+2.  $f_{count}$
+
+Read sections on Hurdle and Zero-inflated models.
+
+Distribution between hurdle and zero-inflated models only source of zeroes is $f_{zero}$-->the zero point mass.
+
+$f_{zero}(y, Z, \gamma)$-->Binary distribution describing whether $y$ follows count distribution or binary distribution.
+
+$f_{count}(y; x, \beta)$-->count distribution (e.g. Poisson, Negative Binomial)
+
+$f_{zero-inflated}(y; x, Z, \beta, \gamma) = f_{zero}(0; Z, \gamma)$ * I{0}$(y) + f_{count}(y, x, \beta) [1-f_{zero}(0; Z, \gamma)]$
+
+Binomial GLM --> $f(0;Z,\gamma) = \pi = g^{-1}(Z^Ty)$
+$\mu_i = \pi_i0 + (1-\pi_i)exp{X_i^T\beta}$
+
+Modelling expected mean of ith observation is a mixture of two components:  Probability of zero count distribution and count distribution of $X^T\beta$
+
+$\beta,\gamma, \theta$ can be estimated with MLE parameter (dispersion if Negative Binomial)
+The pscl package in R is useful for modelling zero-inflated data.
 
 
 
@@ -81,208 +187,5 @@ $$  $$
 
 
 
-
-
-
- Focus of this course (different from the original)
-========================================================
-
-* Foundational concepts
-    - Analysis of contingency tables
-    - Generalized Linear Models (GLMs)
-    - Discussion of Bayesian and frequentist approaches 
-* A taste of common, modern extensions to GLMs
-    - Machine Learning classification methods
-    - Longitudinal data (repeated measures)
-    - Zero-inflated models, over-dispersion
-
-
- Course Introduction
-========================================================
-
-* This course focuses on methods for categorical **response**, or **outcome** variables. 
-    - Binary, e.g.
-    - Nominal, e.g. 
-    - Ordinal, e.g.
-    - Discrete-valued ("interval"), e.g.
-* **Explanatory**, or **predictor** variables can be any type
-* Very generally, we are trying to build models 
-
- 
- Types of categorical variables
-========================================================
-* The way that a variable is measured determines its classification
-    - What are different ways that a variable on education could be classified?
-
-\vspace{5em}
-    
-* The granularity of your data matters! 
-    - In terms of information per measured datapoint, discrete variables > ordinal variables > nominal variables
-    - This has implications for study design and sample size.
-
- Distributions of categorical variables: Binomial
-========================================================
-Let $y_1, y_2,\cdots,y_n$ denote observations from $n$ **independent and identical** trials such that 
-$$P(Y_i=1)=\pi~~~~P(Y_i=0)=1-\pi$$
-The total number of successes (1s) $Y=\sum_{i=1}^n Y_i$ has the **binomial distribution**, denoted by $bin(n,\pi)$.
-The probability mass function for the possible outcomes $y$ for $Y$ is
-$$p(y)=\left(\begin{array}{c}n\\y\end{array}\right)\pi^y(1-\pi)^{(n-y)}, y=0,1, ..., n$$
-with $\mu=E(Y)=n\pi$ and $\sigma^2=Var(Y)=n\pi(1-\pi)$.
-
-- The binomial distribution converges to normality as $n$ increases, for fixed $\pi$, the approximation being reasonable when $n[\min(\pi, 1-\pi)]$ is as small as 5.
-- [Interactive binomial distribution](http://shiny.stat.calpoly.edu/MLE_Binomial/)
-
- Statistical inference 
-========================================================
-Inference is the use of sample data to **estimate** unknown parameters of the population. One method we will focus on is **maximum likelihood estimation (MLE)**.
-
-\includegraphics[width=.7\linewidth]{../../slide-includes/CircleOfLife.pdf}
-
- Statistical inference: maximum likelihood
-========================================================
-
-- The **likelihood function** is the likelihood (or probability in the discrete case) of the sample of your data $X_1,...,X_n$, given the unknown parameter(s) $\beta$. Denoted as
-$l(\beta|X_1,...,X_n)$ or simply $l(\beta)$.
-- The MLE of $\beta$ is defined as 
-$$\hat\beta=\sup_\beta l(\beta)=\sup_\beta L(\beta)$$
-where $L(\beta)=\log(l(\beta))$. The MLE is the parameter value under which the data observed have the highest probability of occurrence.
-
- Statistical inference: MLE (con't)
-========================================================
-- MLE have desirable properties: under weak regularity conditions, MLE have large-sample normal distributions; they are **asymptotically consistent**, converging to the parameter as $n$ increases; and they are **asymptotically efficient**, producing large-sample standard errors no greater than those from other estimation methods. 
-
-
- Covariance matrix of the MLE
-========================================================
-Let $cov(\mathcal{\hat\beta})$ denote the asymptotic convariance matrix of $\mathcal{\hat\beta}$, where $\mathcal{\beta}$ is a multidimensional parameter.
-
-- Under regularity conditions, $cov(\mathcal{\hat\beta})$ is the inverse of the **information matrix**, which is 
-$$[I(\mathcal{\beta})]_{i,j}=-E\left(\frac{\partial^2 L(\mathcal{\beta})}{\partial\mathcal{\beta}_i\partial\mathcal{\beta}_j}\right)$$
-
-- The standard errors are the square roots of the diagonal elements for the inverse of the information matrix. The greater the curvature of the log likelihood function, the smaller the standard errors.
-
- Statistical inference for Binomial parameter
-========================================================
-- The binomial log likelihood function is
-$$L(\pi)=\log[\pi^y(1-\pi)^{(n-y)}]$$
-$$=y\log(\pi)+(n-y)\log(1-\pi)$$
-- Differentiating wrt $\pi$ and setting it to 0 gives the MLE $\hat\pi=y/n$.
-- The **Fisher information** is $$I(\pi)=n/[\pi(1-\pi)]$$
-- The asympotic distribution of the MLE $\hat\pi$ is $N(\pi, \pi(1-\pi)/n)$.
-
- Statistical inference for Binomial parameter
-========================================================
-
-The score, Wald, and likelihood ratio tests use different information from this curve to draw inference about $\pi$.
-
-![binomial likelihood](binomial-likelihood.png)
-
-
- Wald test
-========================================================
-Consider the hypothesis
-$$H_0:\beta=\beta_0 ~~ H_1:\beta\ne\beta_0$$
-
- The **Wald test** defines a test statistic
-$$z=(\hat\beta-\beta_0)/SE, \hbox{  where  }
-SE=1/\sqrt{I(\hat\beta)}= \sqrt{\hat\pi(1-\hat\pi)/n}$$
-Under $H_0: \beta=\beta_0$, the wald test statistic $z$ is approximately 
-standard normal. Therefore $H_0$ is rejected if $|z| > z_{\alpha/2}$.
-
- Likelihood ratio test 
-========================================================
-**The likelihood ratio test (LRT)** is defined as
-$$-2\log\Lambda=-2\log(l_0/l_1)=-2(L_0-L_1)$$
-where $l_0$ and $l_1$ are the maximized likelihood under $H_0$ and $H_0\cup H_1$. 
-The null hypothesis is rejected if $-2\log\Lambda > \chi^2_\alpha(df)$
-where $df$ is the difference in the dimensions of the parameter spaces under $H_0\cup H_1$ and $H_0$.
-
-Score (a.k.a. Wilson) test
-========================================================
-**Score test**, also called the *Wilson* or *Lagrange multiplier test*, is based on the slope and expected curvature of the log-likelihood function $L(\beta)$ at the null value $\beta_0$. It utilizes the size of the score function
-$$u(\beta)=\partial L(\beta)/\partial \beta$$
-evaluated at $\beta_0$. 
-
-The score test statistic is
-$$z = \frac{u(\beta_0)}{[I(\beta_0)]^{1/2}}=\frac{\hat\pi-\pi_0}
-{\pi_0(1-\pi_0)/n}$$.
-
- Example: Estimating the proportion of Vegetarians
-========================================================
-Students in a class were surveyed whether they are vegetarians. Of $n=25$ students, $y=0$ answered "yes".
-
-- Using the Wald method, compute the 95% confidence interval for $\pi$ (true proportion of vegetarians in the population):
-<!--$$\hat\pi \pm 1.96\sqrt{\hat\pi(1-\hat\pi)/n}$$
-$$0\pm 1.96\sqrt{(0\times 1)/25}, \hbox{ or } (0,0)$$ -->
-
-\vspace{5em}
-
-
-- Using the Score method, compute the 95% confidence interval for $\pi$ (true proportion of vegetarians in the population):
-
-<!-- - With the score method, the interval equals (0, 0.133)-->
-
-
- Warning about the Wald test
-========================================================
-
- - When a parameter falls near the boundary of the sample space, often sample estimates of standard errors are poor and the Wald method does not provide a sensible answer.
- 
- - For small to moderate sample sizes, the likelihood-ratio and score tests are usually more reliable than the Wald test, having actual error rates closer to the nominal level.
- 
-
-
-Comparison of the tests
-========================================================
-
-There are lots of different methods to compute CIs for a binomial proportion!
-
-\scriptsize
-```{r}
-library(binom)
-binom.confint(x=0, n=25)
-```
-
- Bayesian inference for binomial parameters 
-========================================================
-
-Bayesian analyses incorporate "prior information" about parameters using 
-
-- prior subjective belief about a parameter, or
-- prior knowledge from other studies, or
-- very little knowledge (a ["weakly informative" prior](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations))
- 
-Prior distribution ($g$) is combined with the likelihood ($f$) to create a posterior ($h$):
-
-$$
-\begin{aligned}
-h(\theta|y) &= \frac{f(\by|\theta)g(\theta)}{f(\by)} \\
- &\propto f(\by|\theta)g(\theta)
-\end{aligned}
-$$
-
- Using Beta distributions for priors
-========================================================
-
-If $\pi\sim beta(\alpha_1, \alpha_2)$ (for $\alpha_1>0$ and $\alpha_2>0$) then $g(\pi) \propto\pi^{\alpha_1-1}(1-\pi)^{\alpha_2-1}$.
-
-Beta is a *conjugate prior distribution* for a binomial parameter, implying that the posterior is also a beta distribution, specifically, $h$ follows a $beta(y + \alpha_1 , n - y + \alpha_2)$.
-
-[Shiny app for Bayesian inference of a Binomial.](https://r.amherst.edu/apps/nhorton/Shiny-Bayes/)
-
- An exercise
-========================================================
-
-1. Write down your prior belief about the probability that this coin will land heads.
-2. Share it with the class
-3. Use the prior probabilities to estimate a beta distribution.
-```{r, eval=FALSE}
-library(MASS)
-x <- c(
-    ## enter probabilities here
-    )
-fitdistr(x, "beta", list(shape1=1,shape2=1))
-```
-4. Use [the app](https://reichlab.shinyapps.io/bayes-beta-binomial/) to see how the posterior changes as we flip the coin.
 
 
