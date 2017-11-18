@@ -8,7 +8,7 @@ For the project you will create, in small groups, a thorough analysis of a parti
 
 Each group will be expected to hand in the following items
 
-1. a PDF file containing the data analysis write-up that has been typeset using RMarkdown/knitr,
+1. a PDF file containing the data analysis write-up that has been typeset using RMarkdown/knitr, submitted via group folder on Google Drive
 2. a single paper copy of the final report.
 
 Choice of a good dataset will be particularly important. Each group should consider multiple datasets as possibilities and will need to have their final choice approved by the instructor.
@@ -60,5 +60,6 @@ Your project grade makes up 30% of your final grade for the class and will be ca
 
 #### Deadlines
 * Fri Nov 17: project outline due
+* Mon Dec 4: draft of individual analyses due in Google Drive, 5pm
 * Tue Dec 12: Presentations in class
 * Fri Dec 15: Projects due at 5pm
