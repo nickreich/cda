@@ -8,7 +8,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, eval=FALSE)
 ```
 
-Your assignment should be submitted in two separate files by 8am on Wednesday September 20th. The first, should be an RMarkdown (.Rmd) or LaTeX (.tex) file. The second should be the PDF file that was reproducibly compiled using the first file. Before submitting your files, create a folder on Google Drive with the name "[lastname]-[firstname]-cda" (e.g. "Reich-Nicholas-cda") and share it with the instructor at `nick@umass.edu`. The homework files should then be submitted by copying the files into this folder. 
+Your assignment should be submitted in two separate files by 8am on Friday September 21st. The first, should be an RMarkdown (.Rmd) or LaTeX (.tex) file. The second should be the PDF file that was reproducibly compiled using the first file. Before submitting your files, create a folder on Google Drive with the name "[lastname]-[firstname]-cda" (e.g. "Reich-Nicholas-cda") and share it with the instructor at `nick@umass.edu`. The homework files should then be submitted by copying the files into this folder. 
 
 ## Question 1
 Say you flip a coin 100 times and get 53 heads. 
