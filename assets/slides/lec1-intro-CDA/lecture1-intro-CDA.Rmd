@@ -159,7 +159,8 @@ evaluated at $\beta_0$.
 
 The score test statistic is
 $$z = \frac{u(\beta_0)}{[I(\beta_0)]^{1/2}}=\frac{\hat\pi-\pi_0}
-{\pi_0(1-\pi_0)/n}$$.
+{\sqrt{\pi_0(1-\pi_0)/n}}$$.
+
 
  Example: Estimating the proportion of Vegetarians
 ========================================================
