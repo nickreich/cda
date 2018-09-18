@@ -1,8 +1,14 @@
 ---
-title: "Contingency Tables (Continued)"
-author: "Coco Kusiak & Liz Austin, based on Agresti Chapters 2&3 and other related Bayesian content"
-date: "9/12/2017"
-output: pdf_document
+title: "Lecture 3: Contingency Tables"
+author: "Nick Reich"
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
+  slidy_presentation: default
+  ioslides_presentation: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,61 +17,86 @@ require(xtable)
 options(xtable.comment = FALSE)
 ```
 
-#General Notation for Contingency Tables:  
+Contingency tables of counts
+============================================
 
-**IJ Tables** represent 2 categorical variables  
+Let $X$ and $Y$ be categorical variables with $I$ and $J$ categories, respectively. 
 
-```{r, echo=FALSE, results='asis', eval=FALSE}
-top <- c(NA, "Y_1", "Y_2", ". . .", "Y_J", NA)
-x1 <- c("X_1", "n_11", "n_12", ". . .", NA, "n_1+")
-x2 <- c("X_2", "n_21", NA, NA, NA, "n_2+")
-x3 <- c(". . .", NA, NA, "n_ij", NA, NA)
-xi <- c("X_I", NA, NA, NA, NA, NA)
-bottom <- c(NA, "n_+1", "n_+2", NA, NA, "n")
-matrix.ij <- rbind(top, x1, x2, x3, xi, bottom)
-frame.ij <- as.data.frame(matrix.ij)
-tab.ij <- xtable(frame.ij, align = "cc|cccc|c")
-print(tab.ij, include.colnames = FALSE, include.rownames = FALSE, hline.after=c(1, 5))
+$IxJ$ contingency tables of counts can be used to represent the cross-tabulation or joint distribution of two such categorical variables.
+
+$n_{ij}$ = the number of observations with $X = i$ and $Y = j$  
+
+$n = \sum_{i, j} n_{ij}$ = the total number of observations
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{c|cccccc|c}
+ & $Y=1$ & $Y=2$ & $\cdots$ & $Y=i$ & $\cdots$ & $Y=J$ & \\ 
+  \hline
+$X=1$ & $n_{11}$  & $n_{12}$ & $\cdots$ & $n_{1j}$ & $\cdots$ & $n_{1J}$ & $n_{1+}$ \\ 
+$X=2$ & $n_{21}$  & $n_{22}$ & $\cdots$ & $n_{2j}$ & $\cdots$ & $n_{2J}$ & $n_{2+}$ \\ 
+$\vdots$ & $\cdots$     & $\cdots$    & $\ddots$ & $\cdots$    & $\cdots$ & $\cdots$    & $\vdots$ \\
+$X=i$ & $n_{i1}$  & $n_{i2}$ & $\cdots$ & $n_{ij}$ & $\cdots$ & $n_{iJ}$ & $n_{i+}$ \\
+$\vdots$ & $\cdots$     & $\cdots$    & $\cdots$ & $\cdots$    & $\ddots$ & $\cdots$    & $\vdots$  \\
+$X=I$ & $n_{I1}$  & $n_{I2}$ & $\cdots$ & $n_{Ij}$ & $\cdots$ & $n_{IJ}$ & $n_{I+}$ \\
+\hline
+      & $n_{+1}$  & $n_{+2}$ & $\cdots$ & $n_{+j}$ & $\cdots$ & $n_{+J}$ & $n$ \\
+\end{tabular}
+\end{table}
+
+Contingency table probabilities
+==================
+
+A contingency table can be represented by probabilities as well.
+
+We define  $\pi_{ij}$ to be population parameter representing the true probability of being in the *$ij^{th}$* cell, i.e. the probability that both $X = i$ and $Y = j$). Formally, $\pi_{ij} = Pr(X=i, Y=j)$ and is called the joint probability of X and Y for all $i = 1, ..., I$ and $j = 1, ..., J$.
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{c|cccccc|c}
+ & $Y=1$ & $Y=2$ & $\cdots$ & $Y=i$ & $\cdots$ & $Y=J$ & \\ 
+  \hline
+$X=1$ & $\pi_{11}$  & $\pi_{12}$ & $\cdots$ & $\pi_{1j}$ & $\cdots$ & $\pi_{1J}$ & $\pi_{1+}$ \\ 
+$X=2$ & $\pi_{21}$  & $\pi_{22}$ & $\cdots$ & $\pi_{2j}$ & $\cdots$ & $\pi_{2J}$ & $\pi_{2+}$ \\ 
+$\vdots$ & $\cdots$     & $\cdots$    & $\ddots$ & $\cdots$    & $\cdots$ & $\cdots$    & $\vdots$ \\
+$X=i$ & $\pi_{i1}$  & $\pi_{i2}$ & $\cdots$ & $\pi_{ij}$ & $\cdots$ & $\pi_{iJ}$ & $\pi_{i+}$ \\
+$\vdots$ & $\cdots$     & $\cdots$    & $\cdots$ & $\cdots$    & $\ddots$ & $\cdots$    & $\vdots$  \\
+$X=I$ & $\pi_{I1}$  & $\pi_{I2}$ & $\cdots$ & $\pi_{Ij}$ & $\cdots$ & $\pi_{IJ}$ & $\pi_{I+}$ \\
+\hline
+      & $\pi_{+1}$  & $\pi_{+2}$ & $\cdots$ & $\pi_{+j}$ & $\cdots$ & $\pi_{+J}$ & $\pi$ \\
+\end{tabular}
+\end{table}
+
+Example contingency table
+==================
+
+
+```{r, out.width = "100pt", echo=FALSE}
+knitr::include_graphics("misc-figs/contingency-table-example.png")
 ```
 
-```{r, echo=FALSE, results='asis'}
-top <- c(NA, "Y_1", "Y_2", ". . .", "Y_J", NA)
-x1 <- c("X_1", "n_11", "n_12", ". . .", ". . .", "n_1+")
-x2 <- c("X_2", "n_21", ". . .", ". . .", ". . .", "n_2+")
-x3 <- c(". . .", ". . .", ". . .", "n_ij", ". . .", ". . .")
-xi <- c("X_I", ". . .", ". . .", ". . .", "n_IJ", ". . .")
-bottom <- c(NA, "n_+1", "n_+2", ". . .", ". . .", "n")
-matrix.ij <- rbind(top, x1, x2, x3, xi, bottom)
-frame.ij <- as.data.frame(matrix.ij)
-tab.ij <- xtable(frame.ij, align = "cc|cccc|c")
-print(tab.ij, include.colnames = FALSE, include.rownames = FALSE, hline.after=c(1, 5))
-```
+
+[Markowitz et al. (2018), Yield of Low-Dose Computerized Tomography Screening for Lung Cancer in High-Risk Workers: The Case of 7189 US Nuclear Weapons Workers, _AJPH_](https://ajph.aphapublications.org/doi/pdf/10.2105/AJPH.2018.304518)
 
 
-**$n_{ij}$** = counts with X = i and Y = j  
+Notation for contingency table probabilities
+==================
 
-**$\pi_{ij}$** = population parameter representing the true probability of being in the *$ij^{th}$* cell (when X = i and Y = j)  
- $$= \text{joint probability of X and Y}  $$
- $$= Pr(X=i, Y=j)  $$
-$$\text{with} \{\pi_{ij}: i = 1, ..., I; j = 1, ..., J\}$$ 
+One important probabilistic quantity from the contingency table is  $\pi_{j|i} = \frac{\pi_{ij}}{\pi_{i+}} = Pr(Y=j | X = i)$ or the conditional probability of j given i. 
 
-$P_{ij} = \text{sample/observed probabilities}$    
+Note that there are similarities here to a regression-like problem, as we are trying to describe an ``outcome'' variable as a function of a ``predictor'' variable. This is similar to the conditional formulation of $E[Y|X]$ in regression where we are modeling an outcome of $Y$ conditional on observed $X$.
 
-$n = \sum_{i, j} n_{ij}$  
+Sampling methodologies
+===================
 
-$\pi_{i+} = \text{marginal distribution across rows} = \sum_{j} \pi_{ij}$  
+Data arise from different sampling strategies. Different methods are appropriate for each strategy, so it's important to be able to identify the key features of different strategies.
 
-$\pi_{+j} = \text{marginal distribution across columns} = \sum_{i} \pi_{ij}$  
-
-$\pi_{j|i} = \text{conditional probability of j given i} = \frac{\pi_{ij}}{\pi_{i+}} = Pr(Y=j | X = i)$  
-
-*Note*: This is equivalent to E[Y|X] in regression.  
-
-#Sampling Types:  
-
-##1. Poisson   
+## 1. Poisson   
 * The overall __n__ is not fixed 
 * There is generally a time interval implied 
+
 * Example: A prospective longitudinal cohort study about developing a disease   
 
 ```{r, echo=FALSE, results='asis'}
@@ -91,9 +122,8 @@ xtable(frame.accidents, align = "c|c|c")
 $$n_{12} = \text{total \# of fatal accidents which occurred in the morning}$$
 
 
-
-
-##2. Multinomial 
+Multinomial 
+=====================
 
 a. with fixed __n__   
      + Example: A cohort study with 3 categories of socioeconomic status and a binary outcome of illness (a fixed # of people are enrolled in the study)  
@@ -166,7 +196,8 @@ xtable(frame.case)
     
     
 
-#$\chi^2$ Tests  
+$\chi^2$ Tests  
+===========================
 
 $$\text{Test Statistic =} \frac{\sum {(O - E)}^2}{E} \text{over all cells/counts}$$  
 
@@ -181,8 +212,8 @@ $$\text{with E = expected \# of counts under the null hypothesis}$$
 * Test is 2-sided by virtue of $(...)^2$  
 * Compare to a $(1 - \alpha)\%$ile of the $\chi_{df}^{2}$ distribution
 
-##Goodness of Fit $\chi^2$ Test  
-
+Goodness of Fit $\chi^2$ Test  
+=======================
 $$H_0: P_1 = P_{0_1}, P_2 = P_{0_2}, ..., P_k = P_{0_k}$$
 
 This answers the question: Does a set of counts follow a specified distribution?
@@ -193,7 +224,8 @@ $E_i  = P_{0_i} \cdot n$
 
 __Note:__ $P_1 = P_2 = ... = P_k$ is a special case    
 
-###Birth Order and Gender  
+Birth Order and Gender  
+=======================
 We have data on 1,000 2-child families. It is typically thought that birth order/gender of two offspring from the same parents are i.i.d. Bernoulli(0.5). So, we can fill in the expected values as 250 for each group.  
 
 $$H_0: P_1 = P_2 = P_3 = P_4 = 0.25$$
@@ -244,7 +276,8 @@ polygon(c(xs, rev(xs)), c(probs, rep(0, length(probs))),
 ```  
 
 
-#Test of Independence  
+Test of Independence  
+=======================
 
 **Definition**: Two variables are independent if $\forall i \in \{1, ..., I\}, j \in \{1, ..., J\}$, $\pi_{ij} = \pi_{i+} \pi_{+j}$.  
 
@@ -252,7 +285,8 @@ This is equivalent to: $Pr(X=i, Y=j) = Pr(X=i) \cdot Pr(Y=j)$.
 
 If true, this implies $\pi_{j|i} = \frac{\pi_{ij}}{\pi_{i+}} = \frac{\pi_{i+}\pi_{+j}}{\pi_{i+}} = \pi_{+j}$.  
 
-##For $\chi^2$ Test:  
+For $\chi^2$ Test:  
+=======================
 
 $$H_0: \pi_{ij} = \pi_{i+} \cdot \pi_{+j} \text{      } \forall_{i,j}$$  
 
@@ -265,7 +299,8 @@ $$df = (\# rows - 1)(\# columns - 1)$$
 **Book suggestion:** Expand a small table and include the $n_{ij}$, $E_{ij}$, and the $(O - E)_{ij}$ for each cell. This may allow you to see patterns and information in the data beyond just the p-value.  
 
 
-#Bayesian Multinomial    
+Bayesian Multinomial    
+=======================
 
 The likelihood of Y is a vector of counts with the # of observations for each category/outcome j.  
 
@@ -278,7 +313,8 @@ $$P(\theta|\alpha) \propto \prod_{j=1}^{k}{\theta_{j}^{\alpha_{j}-1}} \text{ wit
 This implies the posterior follows the Dirichlet Distribution: 
 $$P(\theta|Y) \sim Dirichlet(\alpha_1 + y_1 \text{, } \alpha_2 + y_2 \text{..., } \alpha_k + y_k)$$
 
-##Choices for priors:  
+Choices for priors:  
+=======================
 1. $\alpha_{j} = 1 \text{  } \forall \text{  } j$
     + this distribution assigns equal density to any vector $\theta$ such that $\sum{\theta_{j}} = 1$  
 

@@ -20,7 +20,7 @@ Based on Table 1 from Denes et al (_American Journal of Epidemiology_, 1977, 105
 
 The data was
 
-  \    | Sick    | Not sick 
+  &nbsp;    | Sick    | Not sick 
 ------------ | ------- | ------------
 Worked       | 10      | 12
 Did not work | 2       | 26
@@ -34,7 +34,7 @@ Did not work | 2       | 26
 ## Question 2
 Generalize the above setting to one where you have observations on $n=50$ individuals and the contingency table has multinomial structure as follows:
 
-   \          | Sick    | Not sick 
+   &nbsp;          | Sick    | Not sick 
 ------------ | -------- | ------------
 $X = 1$      | $\pi_{11}$| $\pi_{12}$
 $X = 2$      | $\pi_{21}$| $\pi_{22}$
