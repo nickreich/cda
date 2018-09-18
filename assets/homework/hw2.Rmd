@@ -25,7 +25,7 @@ The data was
 Worked       | 10      | 12
 Did not work | 2       | 26
 
-(a) Obtain a copy of the original paper and read it.
+(a) Obtain a copy of the original paper and read it. (Note: this is a test of your library science skills. Do not obtain a copy of this paper from a classmate. Locate this paper online either via typical search engine or using the UMass Libraries.)
 (b) Re-run the chi-squared test that the authors ran in the paper to test the null hypothesis that employees who worked that night were as likely as those who did not to get sick.
 (c) Run Fisher's exact test on this data to test the same hypothesis.
 (d) Use a Bayesian analysis to test the same hypothesis.
