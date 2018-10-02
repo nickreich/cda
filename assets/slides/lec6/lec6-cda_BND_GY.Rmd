@@ -77,8 +77,6 @@ abline(v = 7/3, lty = 2)
  LR CI's - A Few Notes
 ========================================================
 
-\textbf{Notes}:  
-
 - Each point on this curve represents a "fit" to the data.  
 - In general, adding more data implies that the likelihood is going to be lower.  
 - Likelihoods always need to be relative (i.e. $L_1$ vs. $L_0$).  
