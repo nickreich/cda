@@ -1,13 +1,14 @@
 ---
-title: "Lecture 4"
+title: "Intro to Contingency Tables"
 author: "Nicholas Reich"
 output:
   beamer_presentation:
-    colortheme: whale
-    fonttheme: structurebold
-    theme: Boadilla
-  ioslides_presentation: default
+    includes:
+      in_header: ../../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
   slidy_presentation: default
+  ioslides_presentation: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -47,7 +48,7 @@ $$(IJ=1)-(I-1)-(J-1)= (I-1)(J-1)$$
 - $X^2$ is asymptotically $\chi^2_{(I-1)(J-1)}$
 - It is helpful to look at the residuals
 $$\{\frac{(O-E)^2}{E}\}$$
-The residuals can give useful information about where model is well or not
+The residuals can give useful information about where the model is fitting well or not
 
 ## Measure of Diagnostic Tests
 
@@ -84,7 +85,7 @@ $$
 - Sensitivity $= 0.86$ \newline
 - Specificity $=0.88$ \newline
 
-However, from the clinical point, sensitivity and specificity do not provide useful information. So we introduce Positive predictive value and Negative predictive value
+However, from the clinical point, sensitivity and specificity do not provide useful information. So we introduce Positive Predictive Value and Negative Predictive Value
 
 ***
 - Positive predictive value (PPV) = $\mathbb{P}(D|+)=\frac{\pi_{11}}{\pi_{+1}}$
@@ -92,7 +93,7 @@ However, from the clinical point, sensitivity and specificity do not provide use
 
 - Relationship between PPV and sensitivity:
 $$\begin{aligned}
-\text{PPV} &= \mathbb{P}(D|+) =  \frac{\mathbb{P}(D \cap +)}{ \mathbb{P}(+)} \\
+&\text{PPV} = \mathbb{P}(D|+) =  \frac{\mathbb{P}(D \cap +)}{ \mathbb{P}(+)} \\
 &=\frac{\mathbb{P}(+|D)\mathbb{P}(D)}{ \mathbb{P}(+|D)\mathbb{P}(D)+\mathbb{P}(+|\overline{D})\mathbb{P}(\overline{D})} \\
 &= \frac{\mathbb{P}(+|D)\mathbb{P}(D)}{ \mathbb{P}(+|D)\mathbb{P}(D)+(1-\mathbb{P}(-|\overline{D}))\mathbb{P}(\overline{D})}\\
 &= \frac{\text{Sensitivity}\times\text{Prevalence}}{\text{Sensitivity}\times\text{Prevalence}+(1-\text{Specificity})\times(1-\text{Prevalence})}
@@ -113,7 +114,7 @@ $$
  \end{tabular}
 $$
 
-- If the the prevalence $\mathbb{P}(D)=0.02$
+- If the the prevalence is $\mathbb{P}(D)=0.02$
 - PPV = $\frac{0.86\times0.02}{0.86\times0.02+0.12\times0.98} \approx 13\%$
 - Notice: 
 $$\text{PPV} \ne \frac{\pi_{11} }{\pi_{11} +\pi_{21}}$$
@@ -185,8 +186,8 @@ $$\log\hat{r} = \log\hat{\pi}_1 - \log\hat{\pi}_2$$
 The asymptotic standard error of $\log\hat{r}$
 $$\hat{\sigma}(\log\hat{r}) = (\frac{1-\pi_1}{\pi_1n_1}+\frac{1-\pi_2}{\pi_2n_2})^{1/2}$$
 - Delta method: If $\sqrt{n}(\hat{\beta}-\beta_0) \rightarrow N(0,\sigma^2)$, then
-$$\sqrt{n}(f(\hat{\beta})-f(\beta_0))\rightarrow N(0,[f'(\beta_0)]^2\sigma^2)$$
-for any function $f$ satisfying the condition that $f'(\beta)$ exists
+$$\sqrt{n}(f(\hat{\beta})-f(\beta_0))\rightarrow N(0,[f\prime(\beta_0)]^2\sigma^2)$$
+for any function $f$ satisfying the condition that $f\prime(\beta)$ exists
 - Here $\beta = \pi_1$ or $\pi_2$ and $f(\beta)= \log(\pi_1)$ or $\log(\pi_1)$
 
 
@@ -217,12 +218,12 @@ $$\hat{\sigma}(\log \hat{\theta}) = \sqrt{\frac{1}{n_{11}}+\frac{1}{n_{12}}+\fra
 
 *** 
 
-This formula can be derived using the Delta method  
-Recall $\log \hat{\theta} = \log (\hat{\pi}_1)- \log (1-\hat{\pi}_1)- \log (\hat{\pi}_2)+ \log (1-\hat{\pi}_2)$  \newline 
+This formula can be derived using the Delta method
+Recall $\log \hat{\theta} = \log (\hat{\pi}_1)- \log (1-\hat{\pi}_1)- \log (\hat{\pi}_2)+ \log (1-\hat{\pi}_2)$  \newline
 First, $f(\beta)= \log(\hat\pi_1) - \log (1-\hat{\pi}_1)$\newline
-$$\sigma = \frac{\pi_1(1-\pi_1)}{n_1}, \ \ f'(\beta)=\frac{1}{\pi_1}+\frac{1}{1-\pi_1}$$
-$$[f'(\beta)]^2\sigma^2=\frac{1}{n_1\pi_1}+\frac{1}{n_1(1-\pi_1)}$$
-The estimate is $\frac{1}{n_{11}}+\frac{1}{n_{12}}$  \newline 
+$$\sigma = \frac{\pi_1(1-\pi_1)}{n_1}, \ \ f\prime(\beta)=\frac{1}{\pi_1}+\frac{1}{1-\pi_1}$$
+$$[f\prime(\beta)]^2\sigma^2=\frac{1}{n_1\pi_1}+\frac{1}{n_1(1-\pi_1)}$$
+The estimate is $\frac{1}{n_{11}}+\frac{1}{n_{12}}$  \newline
 
 Similar, when $f(\beta)= \log(\hat\pi_2) - \log (1-\hat{\pi}_2)$\newline
 
@@ -230,7 +231,7 @@ Similar, when $f(\beta)= \log(\hat\pi_2) - \log (1-\hat{\pi}_2)$\newline
 
 - The Wald CI for $\log \hat{\theta}$ is
 $$\log\hat{\theta} \pm Z_{\alpha/2}\hat{\sigma}(\log\hat{\theta})$$
-- Exponentiation the endpoints provides a confidence interval for $\hat{\theta}$
+- Exponentiation of the endpoints provides a confidence interval for $\hat{\theta}$
 
 ## Relationship between Odds Ratio and Relative Risk
 - A large relative risk does not imply large odds ratio
@@ -266,8 +267,8 @@ $$
 ***
 - Odds can be estimated:
 $$\begin{aligned}
-\text{Odds of lung cancer among smoker}&= \frac{\mathbb{P}(\text{Case|Smoker})}{\mathbb{P}(\text{Control|Smoker})} \\
-&=\frac{\mathbb{P}(\text{Case}\cap \text{Smoker})\mathbb{P}(Smoker)}{\mathbb{P}(\text{Control}\cap \text{Smoker})\mathbb{P}(Smoker)} \\
+&\text{Odds of lung cancer among smoker}= \frac{\mathbb{P}(\text{Case|Smoker})}{\mathbb{P}(\text{Control|Smoker})} \\
+&=\frac{\mathbb{P}(\text{Case}\cap \text{Smoker})\mathbb{P}(\text{Smoker})}{\mathbb{P}(\text{Control}\cap \text{Smoker})\mathbb{P}(\text{Smoker})} \\
 &=\frac{\mathbb{P}(\text{Case}\cap \text{Smoker})}{\mathbb{P}(\text{Control}\cap \text{Smoker})}\\
 &= 688/650 = 1.06
 \end{aligned}$$
@@ -289,9 +290,9 @@ It is not too complicated to derive the Delta method in the univariate case.  We
 
 Consider a sequence of random variables $X_1, X_2, \dots, X_n$, where the distribution of $X_i$ may be a function of of $i$.  
 
-Let $F_n(x)$ be the CDF for $X_n$ and $F(x)$ be the CDF for $X$. It is said that $X_n$ **converges in distribution** to $X$, written $X_n \rightarrow{^d} X$, if $\lim_{n \rightarrow \infty}[F_n(x)-F(x)]= 0$ for all $x$ where $F(x)$ is continuous.
+* Let $F_n(x)$ be the CDF for $X_n$ and $F(x)$ be the CDF for $X$. It is said that $X_n$ **converges in distribution** to $X$, written $X_n \rightarrow{^d} X$, if $\lim_{n \rightarrow \infty}[F_n(x)-F(x)]= 0$ for all $x$ where $F(x)$ is continuous.
 
-It is said that $X_n$ **converges in probability** to $X$, written $X_n \rightarrow{^p} X$ if $\lim_{n \rightarrow \infty}[X_n - X] = 0$.
+* It is said that $X_n$ **converges in probability** to $X$, written $X_n \rightarrow{^p} X$ if $\lim_{n \rightarrow \infty}[X_n - X] = 0$.
 
 Note that if $X_n \rightarrow{^p} X$, then $F_n(x) \rightarrow{^d} F(x)$, since $F_n(x)= P(X_n \leq x)$ and $F(x) = P(X\leq x)$. (This is not a proof, but an intuition. The Wikipedia article on convergence has a nice proof.)
 
@@ -299,44 +300,44 @@ Note that if $X_n \rightarrow{^p} X$, then $F_n(x) \rightarrow{^d} F(x)$, since 
 
 ## Delta Method: Slutsky's Theorem and First-Order Taylor Approximation
 
-**Slutsky's Theorem** tells us that if some random variable $X_n$ converges in distribution to $X$ and some random variable $Y_n$ converges in probability to $c$, then $X_n + Y_n$ converges in distribution to $X+c$ and $X_nY_n$ converges in distribution to $cX$.
+* Recall that **Slutsky's Theorem** tells us that if some random variable $X_n$ converges in distribution to $X$ and some random variable $Y_n$ converges in probability to $c$, then $X_n + Y_n$ converges in distribution to $X+c$ and $X_nY_n$ converges in distribution to $cX$.
 
-Recall that the **first-order Taylor approximation** of a function $g$ centered at $u$ can be written as $g(x) = g'(u)(x-u) + g(u) + R(x)$, where $R(x) = \sum_{i=2}^n g^{(i)}(u)\frac{(x-u)^i}{i!}$.
+* Recall that the **first-order Taylor approximation** of a function $g$ centered at $u$ can be written as $g(x) = g\prime(u)(x-u) + g(u) + R(x)$, where $R(x) = \sum_{i=2}^n g^{(i)}(u)\frac{(x-u)^i}{i!}$.
 
 ***
 
 ## Delta Method: Hand-wave-y Derivation
 
-Suppose we know that $\sqrt{n}(X_n-\theta) \rightarrow{^d} N(0, \sigma^2)$ and we are interested in the behavior of some function $g(X_n)$ as $n \rightarrow \infty$.  If $g'(\theta)$ exists and is not zero, we can write $g(X_n)\approx g'(\theta)(X_n-\theta)+g(\theta)$ using Taylor's approximation:
+Suppose we know that $\sqrt{n}(X_n-\theta) \rightarrow{^d} N(0, \sigma^2)$ and we are interested in the behavior of some function $g(X_n)$ as $n \rightarrow \infty$.  If $g\prime(\theta)$ exists and is not zero, we can write $g(X_n)\approx g\prime(\theta)(X_n-\theta)+g(\theta)$ using Taylor's approximation:
 
-$$g(X_n) = g'(\theta)(X_n-\theta) + g(\theta) + \sum_{i=2}^{\infty}g^{(i)}(\theta)\frac{(X_n-\theta)^i}{i!}$$
+$$g(X_n) = g\prime(\theta)(X_n-\theta) + g(\theta) + \sum_{i=2}^{\infty}g^{(i)}(\theta)\frac{(X_n-\theta)^i}{i!}$$
 
 ## Delta Method: Hand-wave-y Derivation
 
 Some manipulation gives:
 
 $$
-\sqrt{n}g(X_n) = \sqrt{n}*g'(\theta)(X_n-\theta) + \sqrt{n}*g(\theta) + \sqrt{n}*\sum_{i=2}^{\infty}g^{(i)}(\theta)\frac{(X_n-\theta)^i}{i!}$$
+\sqrt{n}g(X_n) = \sqrt{n}*g\prime(\theta)(X_n-\theta) + \sqrt{n}*g(\theta) + \sqrt{n}*\sum_{i=2}^{\infty}g^{(i)}(\theta)\frac{(X_n-\theta)^i}{i!}$$
 
 or, using the definition of $R$ from the previous slide,
 
 $$
-\sqrt{n}(g(X_n)-g(\theta)) = \sqrt{n}*g'(\theta)(X_n-\theta) + \sqrt{n}*R(X_n)
+\sqrt{n}(g(X_n)-g(\theta)) = \sqrt{n}*g\prime(\theta)(X_n-\theta) + \sqrt{n}*R(X_n)
 $$
 
 ***
 
 ## Delta Method: Hand-wave-y Derivation
 
-Since $g'(\theta)$ is a constant with respect to $n$ and $\sqrt{n}(X_n-\theta) \rightarrow ^d N(0, \sigma^2)$, we have 
+Since $g\prime(\theta)$ is a constant with respect to $n$ and $\sqrt{n}(X_n-\theta) \rightarrow ^d N(0, \sigma^2)$, we have
 
-$$g'(\theta)\sqrt{n}(X_n-\theta) \rightarrow ^d N(0,\sigma^2(g'(\theta))^2)$$. 
+$$g\prime(\theta)\sqrt{n}(X_n-\theta) \rightarrow ^d N(0,\sigma^2(g\prime(\theta))^2)$$.
 
 
 It can be shown that the remainder term $R(X_n)\rightarrow^p 0$ (see the Stephens link from McGill below for a proof).
 
 
-We now have the necessary setup to apply Slutsky's Theorem, and we can conclude that $$\sqrt{n}(g(X_n)-g(\theta))  \rightarrow^d N(0,\sigma^2(g'(\theta))^2)$$. 
+We now have the necessary setup to apply Slutsky's Theorem, and we can conclude that $$\sqrt{n}(g(X_n)-g(\theta))  \rightarrow^d N(0,\sigma^2(g\prime(\theta))^2)$$.
 
 
 ***
