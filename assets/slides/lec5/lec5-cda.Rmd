@@ -1,13 +1,12 @@
 ---
-title: 'Lecture 6: Likelihood Ratio Confidence Intervals & Bayesian Methods for Contingency
-  Tables'
+title: 'Lecture 5: Likelihood Ratio Confidence Intervals & Bayesian Methods for Contingency Tables'
 author: "Nick Reich / transcribed by Bianca Doone and Guandong Yang"
 output:
+  pdf_document: default
   beamer_presentation:
     includes:
       in_header: ../../slide-includes/beamer-header-for-pandoc.tex
     keep_tex: yes
-  pdf_document: default
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(dev = 'pdf')
