@@ -1,0 +1,186 @@
+---
+title: "Lecture 8: GLMs: Residuals, Newton-Raphson Algorithm, CIs"
+author: "Nick Reich / Transcribed by Yukun Li and Daveed Goldenberg"
+output:
+  beamer_presentation:
+    includes:
+      in_header: /Users/Rhycon/Document/Github/cda/assets/slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
+  pdf_document: default
+  ioslides_presentation: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Model Diagnostics via Residuals
+========================================================
+
+- Example: Heart disease and blood pressure (Ch.6.2.2)
+- Random sample of male residents in Framingham, MA aged 40-57. The response variable is whether they developed coronary heart disease during a six-year follow-up period. 
+
+- Let $\pi_i$ be the probability of heart disease for blood pressure category i.
+
+- Let $x_i$ be the categories of systolic blood pressure
+
+Model Diagnostics via Residuals
+========================================================
+
+- Independent model (Blood Pressure is independent of Heart Disease)
+$$
+logit(\pi_i)=\alpha
+$$
+- Linear logit model (models association between Blood Pressure and Heart Disease)
+$$
+logit(\pi_i)=\alpha+\beta x_i
+$$
+
+
+Model Diagnostics via Residuals
+========================================================
+
+|   SBP   	| Independence 	| Linear Logit 	|
+|:-------:	|:-------------:|:-------------:|
+| <117    	| -2.62        	| -1.11        	|
+| 117-126 	| -0.12        	| 2.37         	|
+| 127-136 	| -2.02        	| -0.95        	|
+| 137-146 	| -0.74        	| -0.57        	|
+| 147-156 	| 0.84         	| 0.13         	|
+| 157-166 	| 0.93         	| -0.33        	|
+| 167-186 	| 3.76         	| 0.65         	|
+|   >186  	| 3.07         	| -0.18        	|
+
+
+Model Diagnostics via Residuals
+========================================================
+
+- Standardized residual plot of two models
+
+```{r echo=F, fig.width=4, fig.height=4}
+SBP <- c(111.5, 121.5, 131.5, 141.5, 151.5, 161.5, 176.5, 191.5)
+independence <- c(-2.62, -0.12, -2.02, -0.74, 0.84, 0.93, 3.76, 3.07)
+linear_logit <- c(-1.11, 2.37, -0.95, -0.57, 0.13, -0.33, 0.65, -0.18)
+plot(SBP, independence, ylab = "Residuals", pch = 1)
+points(SBP, linear_logit, col = 2, pch = 2)
+abline(h=0, col =3)
+legend("topleft", legend=c("independence", "linear logit"),
+       col=c(1, 2), pch = c(1, 2) , cex=0.7)
+```
+
+Model Diagnostics via Residuals
+========================================================
+
+- The Independent model has increasing residuals as blood pressure increases, a pattern like this breaks our assumption that residuals are normally distributed with mean of 0 and variance of 1.
+- The residuals shows that the Independent model does not seem to be a good model
+- However, the Linear Logit model appears to have no pattern throughout the residual plot and appears to be a good model
+
+
+Newton Raphson Algorithm
+========================================================
+
+- An iterative method for solving nonlinear equations
+- General steps:
+    - 1) initial guess for the solution
+    - 2) approximate the function locallly and find maximum
+    - 3) the maximum becomes the next guess
+    - 4) repeat steps 2 and 3 until convergence
+
+- Recall the solution to the estimating equations:
+$$
+\begin{aligned}
+&\frac{\partial L(\boldsymbol{\beta})}{\partial \boldsymbol{\beta}} = \mathbf{0}\\
+&\boldsymbol{\mu}^T = (\frac{\partial L(\boldsymbol{\beta})}{\partial{\beta_1}},..., \frac{\partial L(\boldsymbol{\beta})}{\partial{\beta_p}})\\
+&\boldsymbol{H}=(\frac{\partial^2L(\boldsymbol{\beta})}{\partial{\beta_i}\partial{\beta_j}}), \forall \ i,j=1,2,...,p
+\end{aligned}
+$$
+- where $\boldsymbol{H}$ is Hessian matrix, also called observed information.
+
+
+Newton Raphson Algorithm
+========================================================
+
+- We are trying to maximize $L(\beta)$ through this iterative process
+- starting with t = 1
+$$
+\begin{aligned}
+& \boldsymbol{\mu}^{(t)} = \boldsymbol{\mu}(\beta^{(t)})\\
+&\boldsymbol{H}^{(t)} = \boldsymbol{H}(\beta^{(t)})\\
+\end{aligned}
+$$
+- where $\beta^{(t)}$ is our $t^{th}$ guess of $\beta$
+
+
+Newton Raphson Algorithm
+========================================================
+
+- Let $\boldsymbol{\mu}^{(t)}$ and $\boldsymbol{H}^{(t)}$ be $\boldsymbol{\mu}$ and $\boldsymbol{H}$ evaluated at $\boldsymbol{\beta}^{(t)}$.
+- According to Taylor series expansion,
+$$
+L(\boldsymbol{\beta}) \approx  L(\boldsymbol{\beta}^{(t)})+\boldsymbol{\mu}^{(t)T}(\boldsymbol{\beta}-\boldsymbol{\beta}^{(t)})+\frac{1}{2}(\boldsymbol{\beta}-\boldsymbol{\beta}^{(t)})^T\boldsymbol{H}^{(t)}(\boldsymbol{\beta}-\boldsymbol{\beta}^{(t)})
+$$
+- Solve $\partial L(\boldsymbol{\beta})/\partial \boldsymbol{\beta} \approx \mu^{(t)}+\boldsymbol{H}^{(t)}(\boldsymbol{\beta}-\boldsymbol{\beta}^{(t)})=\mathbf{0}$, we get
+
+$$
+\boldsymbol{\beta}^{(t+1)}=\boldsymbol{\beta}^{(t)}-(\boldsymbol{H}^{(t)})^{-1}\boldsymbol{\mu}^{(t)}
+$$
+
+
+Fisher Scoring Method
+========================================================
+
+- Fisher scoring is an alternative iterative method for solving likelihood equations.
+- Use the expected value of Hessian matrix, called the expected information, denoted as $\boldsymbol{\mathcal{J}}$.
+
+$$
+\begin{aligned}
+&\boldsymbol{\mathcal{J}}=(-E(\frac{\partial^2L(\boldsymbol{\beta})}{\partial{\beta_i}\partial{\beta_j}})) \ \forall \ i,j=1,2,...,p\\
+&\boldsymbol{\beta}^{(t+1)}=\boldsymbol{\beta}^{(t)}-(\boldsymbol{\mathcal{J}}^{(t)})^{-1}\boldsymbol{\mu}^{(t)}
+\end{aligned}
+$$
+
+
+
+Inference for GLMs
+========================================================
+- The curvature of our likelihood function determines the uncertainty/information about a parameter
+- Classical/Frequentist inference assumes under certain regularity conditions, that parameters follows Multivariate Normal distribution centered at $\hat\beta^{MLE}$ with asymptotic covariance approximately by $\boldsymbol{H}^{-1}$ or $\boldsymbol{\mathcal{J}}$.
+- for confidence interval:
+$$
+\hat\beta \sim N(\hat\beta^{MLE}, \ SE(\hat\beta^{MLE}))
+$$
+- for hypothesis testing:
+$$
+\hat\beta^{MLE} \sim N(\hat\beta_0, \ SE(\hat\beta^{MLE}))
+$$
+
+Inference for GLMs
+========================================================
+
+- Bayesian inference
+    - Sample directly from posterior multivariate distribution and calculate the credible sets.
+- Likelihood based inference
+    - Similarly, directly calculate confidence intervals from likelihood function.
+
+
+Inference for GLMs
+========================================================
+
+- SE and CI for GLMs (Frequentist edition)
+- 95% CI for $\beta$:
+$$
+\hat\beta \pm 1.96SE(\hat\beta)
+$$
+- 95% CI for $logit(\mu_i)$:
+$$
+\begin{aligned}
+logit(\mu_i)&=\alpha+\beta x_i\\
+\Rightarrow Var(logit(\hat\mu_i))&=Var(\hat\alpha+\hat\beta x_i)\\
+&=Var(\hat\alpha)+x_i^2Var(\hat\beta)+2Cov(\hat\alpha,\hat\beta)\\
+\Rightarrow CI\ :\ logit(\hat\mu_i) &\pm 1.96SE  (logit(\hat\mu_i))
+\end{aligned}
+$$
+- We can get the 95% CI for $\mu_i$ with Delta method and the CI for $logit(\hat\mu_i)$.
+
