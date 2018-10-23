@@ -18,7 +18,7 @@ Week |       |     | Topic   | Notes | HW Due | Reading
  3   |     | 18, 20 | Contingency Tables | [Lec 3](../assets/slides/lec3/lec3.pdf), [Lec 4](../assets/slides/lec4/lec4.pdf) | [HW1](../assets/homework/hw1.pdf) | CDA 4-6
  4   |     | 25, 27 | Intro to GLMs | [Lec 5](../assets/slides/lec5/lec5.pdf), [Lec 6](../assets/slides/lec6/Lecture6.pdf) | | CDA 9
  5   | Oct | 2, 4   | Logistic GLMs | [Lec 7](../assets/slides/lec7/lec7.pdf), [Lec 8](../assets/slides/lec8/Lec8.pdf)  | [HW2](../assets/homework/hw2.pdf) | CDA 7-8, ARM 24
- 6   |     | 11     | Multinomial GLMs |   || CDA 12, ARM 11-12
+ 6   |     | 11     | Multinomial GLMs | [Lec 8](../assets/slides/lec9/lec9.pdf)  || CDA 12, ARM 11-12
  7   |     | 16, 18 | Multinomial/Poisson GLMs, Penalized Regression |  | [HW3](../assets/homework/hw3.pdf) | 
  8   |     | 23, 25 | Clustered Data |  || CDA 12-13, ARM 13-15
  9   | Nov | 30, 1  | Negative Binomial GLMs | | HW4  | CDA 14, Rock et al., [NB analysis](../assets/code/negative-binomial-case-counts.nb.html)
