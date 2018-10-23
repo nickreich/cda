@@ -1,0 +1,157 @@
+---
+title: "Notes 9/21"
+author: "Liz Austin"
+date: "9/23/2017"
+output: pdf_document
+---
+
+#Comments on Assignment 1:
+
+1) Produce a single, self-contained file
+    - R markdown or python equivalent
+    - create images using that same software
+2) Solution set will be posted
+3) Use slack/office hours!!
+    - Work on equations/latex/knitting, share interesting realizations
+    - slack board for assignment 2
+4) We will begin using HW to cover things not covered in class
+
+Casey's question: Confidence interval = coverage probability? (i.e. 95% when n -> inf?)
+
+#Topics for Today:
+
+1) Diagnostics (*read book, too much to cover in class)
+2) Newton-Raphson
+3) Inference
+
+#Diagnostics
+
+1) Deviance
+    - measure of goodness of fit based on likelihood
+    - most useful as a comparison between models
+    
+      a) Equation:
+        \begin{center}
+        
+        $D = -2[L(\hat\mu|y)-L(y|y)]$
+        
+        $L(y|y) \text{ is log likelihood, saturated model, "best case scenario"}$
+            
+        $\text{LRTS- comparing your model over a saturated model}$
+        \end{center}
+\hfill\break     
+        \begin{center}    
+        $D_{guassian} = \sum(y-\hat\mu)^2$
+        
+        $\text{same Kernel of MSE}$
+        \end{center}
+\hfill\break
+        \begin{center}
+        $D_{poisson} = 2\sum(y\text{log}(\frac{y}{\hat\mu})-(y-\hat\mu))$
+        \end{center}
+\hfill\break  
+      b) Deviance test for "nested" models
+\begin{center}
+$M_{0}\text{-->}\hat\mu \text{ and } M_{1}\text{-->}\hat\mu_{1}$ 
+\end{center}
+\begin{center}
+$M_{0}\text{ is a special case of } M_{1}$
+\end{center}  
+\begin{center}
+$\text{ex: }\eta_{i1}=\beta_{0}+\beta_{1}X_{i1}+\beta_{2}X_{i2}$\\
+$\eta_{i0}=\beta_{0}+\beta_{1}X_{i1} \text{( i.e. }\beta_{2}=0)$
+\end{center}  
+          - simpler models have larger deviance, lower log-likelihoods
+          - $H_{0}:\mu_{1}$ explains the data as well as $\mu_{0}$  
+              $D(y|\hat\mu_{0})=D(y|\hat\mu_{1})\sim\chi_{df}^2$  
+              df = # of parameter difference = # of parts in $M_{1}$ - # parts in $M_{0}$
+            
+2) Residuals  
+    - Pearson, deviance, standardized
+      a) Equation:
+          - Pearson: $e_{i}=\frac{y-\hat\mu_{i}}{\sqrt{V(\hat\mu_{i})}}$
+          - Standardized: $r_{i}=\frac{e_{i}}{\sqrt{(1-\hat h_{i})}}$
+              - Advantage of standardized residuals: $r_{i} \text{ (approx)} \sim N(0,1)$
+              
+      b) Binned residual plots 
+         - "Is my model fitting reasonably?"
+         - In R --> arm::binnedplot()
+              1. Group observations into groups ordered by whatever x value ($x_{k}, x_{ik}, \hat y$) with the same number of observations per group
+              2. Compute the group-wide average residual
+              3. Plot
+      c) Ex. 6.2.2 in book, Heart Disease and BP
+      
+         - Sample of male residents of Framingham, MA age 40-59
+         
+              - Y=[1, developed heart disease during 6 yr. follow-up or 0, no HD]
+         
+              - X = Systolic blood pressure (continuous)
+         
+         - Independence model: logit$(\pi_{i})=\alpha$
+         
+         - Systolic BP model: logit$(\pi_{i})=\alpha + \beta X_{i}$
+         
+         
+\begin{center}
+\begin{tabular}{ c c c c }
+ X level & n & Ind. Model & SBP Model \\ 
+ <117 & 156 & -2.62 & -1.11 \\  
+ 117-126 & 252 & -0.12 & 2.37 \\
+ 127-136 & . & -2.02 & -0.95 \\
+ 137-146 & . & -0.74 & -0.57 \\
+ 147-156 & . & -0.74 & -0.57 \\
+ 157-166 & . & 0.93 & -0.33 \\
+ 167-186 & 99 & 3.67 & 0.65 \\
+ >187 & 43 & 3.07 & -0.18
+\end{tabular}
+\end{center}
+\begin{center}
+\text{Pretty strong linear of residuals in independence model so we need to use SBP model}
+\end{center}
+         
+         
+#Newton-Raphson
+
+1) What is it?
+     - A general iteraive method for solving non-linear equations
+     
+     a) Steps:
+        1. Initial guess at solution
+      
+        2. Approximate the function locally --> find maximum
+      
+        3. The maximum becomes your next "guess"
+      
+        4. Complete steps 2-3 until convergence
+        
+     b) Mathematically:
+        - We are maximizing $L(\beta)$
+      
+        \begin{center}
+        $u=(\frac{\partial L(\beta)}{\partial \beta_{1}}, \frac{\partial L(\beta)}{\partial \beta_{2}}, ...), H = \text{ Hessian Matrix where element i,j is: } \frac{\partial^2 L(\beta)}{\partial \beta_{i} \partial \beta_{j}}$\\
+        \end{center}
+        - Iterative process, t=1...
+        
+        \begin{center}
+            $u^{(t)}=u(\beta^{(t)})$\
+            
+            $H^{(t)}=H(\beta^{(t)})$\
+            
+            where $\beta^{(t)}$ is our $t^{th}$ "guess" of $\beta$
+          \end{center}  
+          
+        - Taylor series approximation in local region of $\beta^{(t)}$:   
+        \begin{center}
+        $L(\beta) \approx L(\beta^{(t)})+u^{(t)}(\beta-\beta^{(t)})+\frac{1}{2}(\beta-\beta^{(t)})^T H^{(t)}(\beta-\beta^{(t)})$ (*multidimensional quadratic!)
+         \end{center}
+            
+            \begin{center}
+            solve: $\frac{\partial L(\beta)}{\partial \beta}=u^{(t)}+H^{(t)}(\beta-\beta^{(t)})=0$ --> $\beta^{(t+1)}$
+            \end{center}
+            \begin{center}
+            $\beta^{(t+1)}=\beta^{(t)}-(H^{(t)})^{-1}u^{(t)}$
+            \end{center}
+            \begin{center}
+            $H^{(t)}$-->$(I^{(t)})^{-1} \text{ *Fisher's uses this instead of Hessian matrix}$
+            \end{center}
+           
