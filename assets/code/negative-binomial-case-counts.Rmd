@@ -1,12 +1,15 @@
 ---
-title: "Using a Negative Binomial model with smooth splines to predict infectious disease case counts"
+title: Using a Negative Binomial model with smooth splines to predict infectious disease
+  case counts
 author: "Nick Reich, adapted from work by Steve Lauer et al"
-output: html_notebook
-editor_options: 
+output:
+  html_document:
+    df_print: paged
+editor_options:
   chunk_output_type: inline
 ---
 
-```{r setup, include=FALSE}
+```{r setup, warning=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 library(ggplot2)
 library(dplyr)
@@ -44,7 +47,7 @@ We aggregated these measures into monthly covariates for maximum, minimum, and m
 The dataset shown here and provided in this repository is the same one used in the analysis. Some columns have been removed for simplicity. Here, we split the dataset into a training dataset from 2000 through 2012 and a testing dataset from 2013 and 2014.
 
 ```{r}
-dat <- read.csv("dengue-data.csv")
+dat <- read.csv("https://raw.githubusercontent.com/nickreich/cda/master/assets/code/dengue-data.csv")
 train_dat <- filter(dat, year<2013) ## all but 2013 and 2014
 test_dat <- filter(dat, year>=2013)
 str(train_dat)
