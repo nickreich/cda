@@ -21,8 +21,8 @@ Clustered Data
 ========================================================
 -
 \textbf{Clustered Data:}    
-- Hierarchy of nested populations    
-- Longitudinal, Correlated observations or sets
+- Hierarchy, nested populations    
+- Longitudinal, Correlated observations or sets .eg repeated measure
 -
 \textbf{Example: (Hierarchy of nested populations)}     
 - Patient $\in$ Hospital $\in$ Region
@@ -158,13 +158,13 @@ Example
 
 - pain indicator $Y_{ij}$ and group indicator $X_{ij}$
  $$y_{ij} = \begin{cases}
-    1 & \text{ patient i at visit j has no pain} \\
-    0 & \text{ patient i at visit j has pain}
+    1 & \text{ patient j at visit i has no pain} \\
+    0 & \text{ patient j at visit i has pain}
  \end{cases}$$
  
  $$x_{ij} = \begin{cases}
-    1 & \text{j=2; patient i's second visit} \\
-    0 & \text{j=1; pateint i's first visit}
+    1 & \text{i=2; patient's second visit} \\
+    0 & \text{i=1; pateint's first visit}
  \end{cases}$$
 
 
@@ -187,7 +187,8 @@ $$
 Y_i \sim N(\pi, \sigma^2_y) \\
 logit(\pi) = \alpha_i + \beta X_{ij}\\
 \alpha_i \sim N(\beta_0, \sigma_\alpha) \\
-\beta_0 \sim N(0,100)
+\beta_0 \sim N(0,100)\\
+\sigma_\alpha \sim U(0,5)
 \end{aligned}
 $$
 
