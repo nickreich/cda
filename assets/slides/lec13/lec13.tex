@@ -432,14 +432,15 @@ logit(P(Y_{ij}=1|\mu_i)) = \alpha + \beta X_{ij} + \mu_i \\
 \begin{itemize}
 \tightlist
 \item
-  Similar notation for bayesians
+  logistic-normal, similar notation for bayesians with weakly
+  informative priors
 \end{itemize}
 
 \[
 \begin{aligned}
 Y_i \sim N(\pi, \sigma^2_y) \\
 logit(\pi) = \alpha_i + \beta X_{ij}\\
-\alpha_i \sim N(\beta_0, \sigma_\alpha) \\
+\alpha_i \sim N(\beta_0, \sigma^2_\alpha) \\
 \beta_0 \sim N(0,100)\\
 \sigma_\alpha \sim U(0,5)
 \end{aligned}
