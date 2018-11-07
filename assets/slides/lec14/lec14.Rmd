@@ -1,0 +1,135 @@
+---
+title: 'Lecture 14: Mixture Distributions in GLMMs'
+author: "Nick Reich / Transcribed by Hachem Saddiki, edited by Gregory Guranich"
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
+  ioslides_presentation: default
+  pdf_document: default
+  slidy_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Mixture Distributions
+========================================================
+- A mixture distribution is a probability distribution derived from a convex (weighted) combination of individual probability distributions, called **mixture components**.  
+- The weights associated with each mixture component are called **mixture weights**; these are non-negative and sum to $1$.
+- **Notation:** Given a set of mixture components $g_k(x)$ and weights $w_k$ indexed by $k=1, ...,K$, the mixture distribution can be written as 
+
+\begin{equation}
+f(x) = \sum_{k=1}^K w_k g_k(x)
+\end{equation}
+
+where $\sum_{k=1}^K w_k = 1$ and $w_k \geq 0 \ \forall k$.
+
+Mixture Distributions (cont'd)
+========================================================
+
+- **Mixture** distributions are not to be confused with the **convolution** of probability distributions. 
+- The former models the **distribution** of a random variable as the weighted sum of two or more mixture distributions; while the latter models the **value** of a random variable as the sum of the **values** of two or more random variables.
+- Mixture distributions are typically used to model a statistical population with subpopulations that are believed to share similar characteristics.
+- Mixture distributions are formulated as **hierarchical models** with hidden (latent) factors, often making exact statistical inference an intractable task.
+
+GLMM as a model for mixture distributions
+================================================
+
+- Consider an analysis of children's gender in relation to their mother. Define a binary random variable $Y_{ij}$ which equals $1$ if the $j$-th child born to the $i$-th mother is a boy.
+- We write a GLMM model for the outcome as follows
+\begin{align*}
+Y_{ij} | \alpha_i &\sim Bernoulli(\pi_i) \\
+\pi_i &= logit^{-1}(\alpha_i)\\
+\alpha_i &\sim Normal(0, \sigma_{\alpha}^2)
+\end{align*}
+
+- In this example, the population of interest are the children, and the mixture distribution accounts for subpopulations of children that share the same mother. The rationale is that these children, being from the same mother, would share similar (genetic or other) characteristics.
+
+
+
+GLMM as a model for mixture distributions (cont'd)
+================================================
+
+- Using the law of total expectation, we can compute the expectation of $Y_i$ as:
+$E[Y_i] = E[E[Y_i|\alpha_i]] = E[\pi_i] = E[logit^{-1}(\alpha_i)]$
+- Unfortunately, an exact expression for $E[Y_i]$ involves a complicated integral form, and so exact inference is intractable for this model formulation. 
+- Nonetheless, in this simple setting, one can appeal to a Monte Carlo simulation to approximate the expectation of interest.
+- Alternatively, one can opt for a different model formulation that is amenable to exact expressions for the expectation and variance of interest. 
+
+Beta-Binomial Model 
+=======================
+
+- Following the same example of children's gender and their mother, we can formulate a Beta-Binomial model for the outcome $Y_{ij}$ as follows:
+\begin{align*}
+Y_{i}|\pi_i &\sim Binomial(n_i, \pi_i) \\
+\pi_i &\sim Beta(\alpha, \beta)
+\end{align*}
+
+- In here, we model $\pi_i$ as a draw from a Beta distribution. 
+- It is easy to see that the $Y_{i}$ reduces to a Bernoulli distribution when $\alpha=\beta=1$. 
+
+Beta-Binomial Model (cont'd)
+=======================
+- Another appealing property of the model is that the Beta distribution is conjugate to the Binomial distribution. 
+- This leads to a closed form expression for the mean and variance of $Y_i$:
+
+\begin{align}
+E[Y_i] &= \frac{n_i\alpha}{\alpha+\beta} \\
+Var(Y_i) &= \frac{n_i\alpha\beta(\alpha+\beta+n_i)}{(\alpha+\beta)^2 \ (\alpha+\beta+1)}
+\end{align}
+
+Shrinkage Effect for Beta-Binomial 
+======================
+
+- We can use the conjugacy of the Beta prior and Binomial likelihood to derive a distributional form for the posterior $\pi_i|y_i$.
+
+\begin{align*}
+y_i |\pi_i &\sim Binomial(n_i, \pi_i) \\
+\pi_i|\alpha,\beta &\sim Beta(\alpha,\beta)\\
+p(\pi_i|y_i,\alpha,\beta) &\propto p(y_i|\pi_i)p(\pi_i|\alpha,\beta)\\
+                             &\propto \pi^{y_i}_i(1-\pi_i)^{n_i-y_i}*\pi^{\alpha-1}_i(1-\pi_i)^{\beta-1}\\
+                             &\propto \pi^{y_i+\alpha-1}_i(1-\pi_i)^{n_i-y_i+\beta-1}\\
+                             &\sim Beta(y_i+\alpha, n_i-y_i+\beta)
+\end{align*}
+
+- Having found a closed form expression for the posterior $\pi_i|y_i$, we can compute the posterior mean as 
+\begin{equation}
+E(\pi_i|y_i,\alpha,\beta)=\frac{(y_i+\alpha)}{(n_i+\alpha+\beta)}
+\end{equation}
+
+Shrinkage Effect for Beta-Binomial (cont'd)
+======================================
+
+- From Eq(4), we can clearly see the influence of the parameters of the prior ($\alpha, \beta$) on the posterior mean $\pi_i | y_i$. 
+- As ($\alpha, \beta$) increase, $E[\pi|y_i]$ decreases; this is sometimes referred to as a **shrinkage effect**. 
+- The effect of the prior on the posterior mean gets weaker as the sample size increases. Intuitively, this reflects the Bayesian perspective of relying more on prior information when few data points are available; and relying on the data when the sample size is large.
+
+- We provide an illustration of the shape of the posterior $\pi|y_i$ for different settings of the prior $\pi|\alpha,\beta$. We use a fixed sample size of $N=20$.
+
+Shrinkage Effect: plot of posterior for different prior settings of the Beta-Binomial model
+=====
+```{r, echo=FALSE}
+# plot beta-binomial posterior for different prior settings
+set.seed(998)
+Y <- 4
+n <- 20
+grid   <- seq(0,1,.01)
+a1 <- 1;  b1 <- 1;  post1 <- dbeta(grid,Y+a1,n-Y+b1)
+a2 <- 1;  b2 <- 3;  post2 <- dbeta(grid,Y+a2,n-Y+b2)
+a3 <- 3;  b3 <- 1;  post3 <- dbeta(grid,Y+a3,n-Y+b3)
+a4 <- .5; b4 <- .5; post4 <- dbeta(grid,Y+a4,n-Y+b4)
+
+plot(grid,post1,type="l",xlab="Pi",ylab="Posterior density",col=1,
+     ylim=c(0, max(post1,post2,post3,post4)),cex=0.8)
+lines(grid,post2,lty=2,col=2,cex=0.8)
+lines(grid,post3,lty=3,col=3,cex=0.8)
+lines(grid,post4,lty=4,col=4,cex=0.8)
+legend("topright",c("Beta(1,1)","Beta(1,3)",
+               "Beta(3,1)","Beta(.5,.5)"),
+       col=1:4,lty=1:4,inset=0.05,
+       title="Prior Distn.")
+```
