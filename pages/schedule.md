@@ -21,7 +21,7 @@ Week |       |     | Topic   | Notes | HW Due | Reading
  6   |     | 11     | Multinomial GLMs | [Lec 9](../assets/slides/lec9/lec9.pdf)  || CDA 12, ARM 11-12
  7   |     | 16, 18 | Multinomial/Poisson GLMs, Penalized Regression | [Lec 10](../assets/slides/lec10/lec10.pdf),[Lec 11](../assets/slides/lec11/lec11.pdf) | [HW3](../assets/homework/hw3.pdf) | 
  8   |     | 23, 25 | Clustered Data | [Lec 13](../assets/slides/lec13/lec13.pdf) || CDA 12-13, ARM 13-15
- 9   | Nov | 30, 1  | Negative Binomial GLMs | [Lec 15](../assets/slides/lec15/lec15.pdf) | [HW4](../assets/homework/hw4.pdf)  | CDA 14, Rock et al., [NB analysis](../assets/code/negative-binomial-case-counts.nb.html)
+ 9   | Nov | 30, 1  | Negative Binomial GLMs || [Lec 14](../assets/slides/lec14/lec14.pdf), [Lec 15](../assets/slides/lec15/lec15.pdf) | [HW4](../assets/homework/hw4.pdf)  | CDA 14, Rock et al., [NB analysis](../assets/code/negative-binomial-case-counts.nb.html)
  10  |     | 6, 8   | Review and Midterm Exam | | | 
  11  |     | 13, 15 | [Paper presentations](paper-presentations.html) |  |  | 
      |     | 20, 22 | Thanksgiving | | <!--[Exam](exam-resubmission.html)--> | 
