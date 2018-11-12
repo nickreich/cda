@@ -11,7 +11,7 @@ Each group will be expected to hand in the following items
 1. a PDF file containing the data analysis write-up that has been typeset using RMarkdown/knitr, submitted via group folder on Google Drive
 2. a single paper copy of the final report.
 
-Choice of a good dataset will be particularly important. Each group should consider multiple datasets as possibilities and will need to have their final choice approved by the instructor.
+Choice of a good dataset will be particularly important. Each group should consider multiple datasets as possibilities and will need to have their final choice approved by the instructor. Some possible datasets for consideration can be found [here](datasets.html).
 
 #### Guidelines for the project write-up
 
