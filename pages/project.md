@@ -4,7 +4,7 @@ title: Project Description
 ---
 
 #### Project Assignment
-For the project you will create, in small groups, a thorough analysis of a particular dataset. The analysis project will have components completed by the group and by each individual student. Each group will prepare a formal written report and will present their project to the class in a 25-minute presentation.
+For the project you will create, in small groups, a thorough analysis of a particular dataset. The analysis project will have components completed by the group and by each individual student. Each group will prepare a formal written report and will present their project to the class in a 20-minute presentation.
 
 Each group will be expected to hand in the following items
 
@@ -37,7 +37,7 @@ Additionally, each member of the group will lead a particular thread of analysis
 For this independent data analysis portion of the project, the two major paths that you can take are 
 
 1. to fit a specialized model to the data (i.e. not just a GLM with main effect covariates) and interpret the output from the methods that you have used. Examples here could include regression trees, a multiple imputation analysis, or a more complex Bayesian analysis than what we have covered in class.
-2. to create a simulation study that answers a particular question about your dataset.  For example, you could compare the performance of two different methods in analyzing a particular dataset or discuss the performance of a particular diagnostic method for a particular method (i.e. what kind of residuals do we use for mixed models?). 
+2. to create a simulation study that answers a particular question about your dataset or about appropriate methods for your dataset.  For example, you could compare the performance of two different methods in analyzing a particular dataset or discuss the performance of a particular diagnostic method for a particular method (i.e. what kind of residuals should we use for mixed models?). 
 
 The data analysis write-up will contain a section for each group member's analysis and a conclusion that summarizes the results. 
 
@@ -59,7 +59,7 @@ Your project grade makes up 30% of your final grade for the class and will be ca
 
 
 #### Deadlines
-* Fri Nov 17: project outline due
-* Mon Dec 4: draft of individual analyses due in Google Drive, 5pm
-* Tue Dec 12: Presentations in class
-* Fri Dec 15: Projects due at 5pm
+* Fri Nov 16: project outline (dataset proposal and draft topics) due
+* Mon Dec 3: draft of individual analyses due in Google Drive, 5pm
+* Tue Dec 11: Presentations in class
+* Fri Dec 14: Projects due at 5pm
