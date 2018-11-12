@@ -9,7 +9,7 @@ Some datasets may be found in the datsets folder of the Google Drive folder for 
 
 * Other datasets are available from [the Vanderbilt data website](http://biostat.mc.vanderbilt.edu/wiki/Main/DataSets) or [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/).
 * The [Add Health website](http://www.cpc.unc.edu/projects/addhealth/data/publicdata/public-use-dataset-descriptions) has some public use datasets from the National Longitudinal study of Adolescent to Adult Health. 
-* Public CDC data on influenza. 
+* Public CDC data on influenza via the [FluView site](https://gis.cdc.gov/grasp/fluview/main.html) or (more usefully in my experience) the [cdcfluview R package](https://github.com/hrbrmstr/cdcfluview).
 
 Following links taken from the [ASA Public Health Data Challenge](https://thisisstatistics.org/public-health-data-challenge/)
 
