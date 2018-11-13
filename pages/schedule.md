@@ -24,7 +24,7 @@ Week |       |     | Topic   | Notes | HW Due | Reading
  9   | Nov | 30, 1  | Negative Binomial GLMs || [Lec 14](../assets/slides/lec14/lec14.pdf), [Lec 15](../assets/slides/lec15/lec15.pdf) | [HW4](../assets/homework/hw4.pdf)  | CDA 14, Rock et al., [NB analysis](../assets/code/negative-binomial-case-counts.nb.html)
  10  |     | 6, 8   | Review and Midterm Exam | | | 
  11  |     | 13, 15 | Project work |  |  | 
-     |     | 20, 22 | Thanksgiving | | <!--[Exam](exam-resubmission.html)--> | 
+     |     | 20, 22 | Thanksgiving | | [Exam](exam-resubmission.html) | 
  12  |     | 27, 29 | | | <!--HW4--> | 
  13  | Dec | 4, 6   | Projects | || 
  14  |     | 11     | Project presentations | || 
