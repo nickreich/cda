@@ -1,0 +1,348 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[ignorenonframetext,]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+\centering
+\begin{beamercolorbox}[sep=16pt,center]{part title}
+  \usebeamerfont{part title}\insertpart\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+\centering
+\begin{beamercolorbox}[sep=12pt,center]{part title}
+  \usebeamerfont{section title}\insertsection\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{part title}
+  \usebeamerfont{subsection title}\insertsubsection\par
+\end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Extentions to Models for Count Data},
+            pdfauthor={Nicholas Reich, transcribed by Herb Susmann edited by Hachem Saddiki},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+%       ************************************************
+%       **        LaTeX preamble to be used with all 
+%	**        statsTeachR labs/handouts.
+%
+%	Author: Nicholas G Reich
+%	Last modified: July 2017
+%	************************************************
+
+%\documentclass[table]{beamer}
+
+%	Set theme (a nice plain one)
+\usetheme{Malmoe}
+
+%	Use named colors, set main color of theme
+%		to match Web site color:
+\definecolor{MainColor}{RGB}{10, 74, 109}
+\colorlet{MainColorMedium}{MainColor!50}
+\colorlet{MainColorLight}{MainColor!20}
+\usecolortheme[named=MainColor]{structure} 
+
+%	For tables
+%[dvipsnames] [table]
+\usepackage{xcolor}
+
+%% calling tabu.sty, assuming a particular directory structure
+\usepackage{../../slide-includes/tabu}	% Even fancier than tabulary
+\usepackage{multirow}
+
+%	Just for the degree symbol
+\usepackage{textcomp}
+
+%	Get rid of footline (page, author, etc. on each slide)
+\setbeamertemplate{footline}{}
+%	Get rid of navigation buttons
+\setbeamertemplate{navigation symbols}{}
+
+%	Make footnotes not ugly
+\usepackage{hanging}
+\setbeamertemplate{footnote}{\raggedright\hangpara{1em}{1}\makebox[1em][l]{\insertfootnotemark}\footnotesize\insertfootnotetext\par}
+
+%	Text style for code snippets inline in text:
+\newcommand{\codeInline}[1]{\texttt{#1}}
+
+%	Text style for emphasis stronger than \emph:
+%		(Note, this doesn't toggle the way \emph does.
+%			(Note, this can be done, didn't seem worth the trouble.))
+\newcommand{\strong}[1]{{\bfseries{#1}}}
+
+
+%        ******	Define title page	**********************
+\setbeamertemplate{title page}{
+	{\color{MainColor}
+	% There must be a better way than this -vspace at
+	%	 the top and bottom of the page to reduce the 
+	%	 bottom margin, but I can't find one that works.
+	%\vspace{-6em}
+
+% 	% Go to a lot of trouble to get the title in a
+% 	%	nice box, since customizing a beamer block
+% 	%	does not entirely work here (I don't know why)
+	\newlength{\titleBoxWidth}
+	\setlength{\titleBoxWidth}{\textwidth}
+	\addtolength{\titleBoxWidth}{-2.0em}
+	\setlength{\fboxsep}{1.0em}
+	\setlength{\fboxrule}{0pt}
+	\fcolorbox{MainColor!25}{MainColor!25}{
+		\parbox{\titleBoxWidth}{
+			\raggedright
+			\LARGE\textbf{\inserttitle}
+		}	% end parbox
+	}	% end fcolorbox
+
+	\vfill
+	\small{Author: \insertauthor}
+	\vspace{\baselineskip}
+
+	\small{Course: \underline{\href{http://nickreich.github.io/cda}{Categorical Data Analysis}} (BIOSTATS 743)}
+
+%	\small{\Instructor}
+%	\vspace{\baselineskip}
+
+%	\small{\emph{This material is part of the \strong{statsTeachR} project}}
+
+	\vfill
+	
+	\tiny{\emph{Made available under the \underline{\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons Attribution-ShareAlike 4.0 International License}.}} \hfill \includegraphics[height=1em]{../../slide-includes/by-sa-compact.png}
+ }
+
+
+		\vspace{-15em}
+
+	}	% end color
+	\clearpage
+}	% end define title page
+
+\input{../../slide-includes/shortcuts}
+
+\hypersetup{colorlinks,linkcolor=,urlcolor=MainColor}
+\def\begincols{\begin{columns}}
+\def\begincol{\begin{column}}
+\def\endcol{\end{column}}
+\def\endcols{\end{columns}}
+
+\title{Extentions to Models for Count Data}
+\author{Nicholas Reich, transcribed by Herb Susmann edited by Hachem Saddiki}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Extensions to Models for Count Data}
+\protect\hypertarget{extensions-to-models-for-count-data}{}
+
+There are several ways to extend models for count data in order to
+capture properties like overdispersion.
+
+\begin{itemize}
+\tightlist
+\item
+  Poisson model with adjustment for overdispersion (see previous notes)
+\item
+  Poisson-Gamma Model
+\item
+  Generalized Linear Mixed Models (GLMMs)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Poisson-Gamma Model}
+\protect\hypertarget{poisson-gamma-model}{}
+
+A Poisson-Gamma model is one way to account for overdispersion in models
+of count data. The model has two parts:
+
+\begin{itemize}
+\tightlist
+\item
+  First, we assume that the outcome variable follows a Poisson
+  distribution: \(Y | \lambda \sim \mathrm{Poisson}(\lambda)\).
+\item
+  Second, we assume that the rate parameter for that Poisson
+  distribution itself follows a Gamma distribution:
+  \(\lambda \sim \mathrm{Gamma}(k, \mu)\).
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Under this parameterization, \(\mathrm{E}[\lambda] = \mu\),
+    \(\mathrm{Var}[\lambda] = \mu^2/k\).
+  \item
+    We can alternatively parameterize in terms of a dispersion parameter
+    \(\gamma = 1/k\).
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Poisson-Gamma Model}
+\protect\hypertarget{poisson-gamma-model-1}{}
+
+\begin{itemize}
+\item
+  Under these two assumptions, the marginal distribution of \(Y\)
+  follows a negative binomial distribution:
+  \(Y \sim \mathrm{NegativeBinomial(k,\mu)}\)
+\item
+  See
+  \href{https://probabilityandstats.wordpress.com/tag/poisson-gamma-mixture/}{this
+  blog post} for a proof that the Poisson-Gamma model is a negative
+  binomial distribution.
+\item
+  The mean and variance of the Poisson-Gamma model is not equal (as
+  opposed to a Poisson model), which allows it to account for
+  overdispersion.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Poisson-Gamma Model}
+\protect\hypertarget{poisson-gamma-model-2}{}
+
+\begin{itemize}
+\tightlist
+\item
+  The expected value of \(Y\) is given by: \[
+  \begin{aligned}
+  \mathrm{E}[Y] &= \mathrm{E}[\mathrm{E}[Y|\lambda]] \\
+              &= \mathrm{E}[\lambda] \\
+              &= \mu \\
+  \end{aligned}
+  \]
+\item
+  And the variance: \[
+  \begin{aligned}
+  \mathrm{Var}[Y] &= \mathrm{E}[\mathrm{Var}[Y|\lambda]] + \mathrm{Var}[\mathrm{E}(Y|\lambda)] \\
+                &= \mathrm{E}[\lambda] + \mathrm{Var}[\lambda] \\
+                &= \mu + \mu^2/k\text{, or equivalently} \\
+                &= \mu + \gamma \mu^2
+  \end{aligned}
+  \]
+\item
+  Note that as \(\gamma \rightarrow 0\) (\(k \rightarrow \infty\)), the
+  distribution of \(Y\) approaches a Poisson distribution.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Generalized Linear Mixed Models}
+\protect\hypertarget{generalized-linear-mixed-models}{}
+
+Another approach is to use a Generalized Linear Mixed Model (GLMM).
+
+\begin{itemize}
+\item
+  First, assume that the outcome \(Y_i\) follows a Poisson distribution.
+\item
+  Assume the link-transformed expected value of the outcome is a linear
+  function of the covariates and random effects: \[
+  \begin{aligned}
+  \log(\mathrm{E}[Y_i|\mu_i]) &= X_{ij}^T\beta + \mu_i \\
+  \end{aligned}
+  \]
+\item
+  Finally, assume that the random effects \(u_i\) follow a distribution:
+  \[
+  u_i \sim N(0,\sigma^2)
+  \]
+\item
+  This example uses a log link and assumes the \(u_i\) are normally
+  distributed.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Generalized Linear Mixed Models}
+\protect\hypertarget{generalized-linear-mixed-models-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Note that you need to use a link that transforms the linear predictor
+  to a non-negative value. For example, the identity link leads to
+  structural problems because a negative linear predictor implies a
+  negative expected count, which is impossible.
+\end{itemize}
+
+Other choices are possible for the distribution of \(u_i\):
+
+\begin{itemize}
+\tightlist
+\item
+  Assuming \(u_i \sim \mathrm{Gamma}(1,\gamma)\) implies a negative
+  binomially distributed outcome \(Y\).
+\item
+  Another possible choice is assume \(u_i\) follow a log-normal
+  distribution.
+\item
+  Each choice implies a different structure for the random intercepts.
+\end{itemize}
+
+\end{frame}
+
+\end{document}

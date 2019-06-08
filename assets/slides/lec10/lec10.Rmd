@@ -1,123 +1,228 @@
 ---
-title: "Nominal Response Multinomials (Chapter 8.1 in CDA)"
-author: "Luke Toomey"
-date: "October 5, 2017"
-output: pdf_document
+title: "Lecture 10: GLMs: Poisson Regression, Overdispersion"
+author: "Nick Reich / Transcribed by Daveed Goldenberg, edited by Josh Nugent"
+
+output:
+  beamer_presentation:
+    includes:
+      in_header: ../../slide-includes/beamer-header-for-pandoc.tex
+    keep_tex: yes
+  slidy_presentation: default
+  ioslides_presentation: default
+  pdf_document: default
 ---
 
- 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(mosaic)
 ```
 
-#Multinomial Response Data
--- Y is a nominal scale response variable with J categories, where Multinomials/polytomous logistic model describes loss odds for $\binom J2$ pairs of categories
 
--- $\pi_j(\vec{x})=P(y=j|\vec{x}),when \sum_j\pi_j(x)=1$
+Poisson GLMs
+========================================================
 
--- $Y|\vec{x} \sim Multinomial(\hat{N},\{\pi_1(x),\pi_2(x),...,\pi_j(x)\}$
+- Imagine you have count data following the Poisson distribution:
+$$
+Y_i \sim Poisson(\lambda_i)
+$$
+ - $Y_i$ is the total count in the time interval, $\lambda_i$ is $E(Y_i)$, that is, the risk/rate of occurrence in some time interval,   
+ - We use a log link for our GLM:
 
--- pick baseline category, J
+$$
+\eta_i = X_i\beta=\log{\lambda_i}=g(\lambda_i)=g(E[y_i])
+$$
 
-* $log\frac{\pi_j(x)}{\pi_J(x)}=\alpha_j+\beta_j^T(\vec{x})$ for $j=1,...,J-1$
+Poisson GLMs
+========================================================
 
--- Notes about using model:
+- Key Points:
+  - Log link implies multiplicative effect of covariates
 
-* $X^2$ (Pearson G.O.F) or $G^2$ (likelihood G.O.F) statistics when data not sparse
-* if data are sparse $X^2, G^2$ are valid for comparison between models with a few terms different
-
-##Response Probabilities
-
-$$\pi_j(\vec{x} )=\frac{exp\{\alpha_j+\beta_j^T(\vec{x})\}}{1+\sum_{h=1}^Jexp\{\alpha_h+\beta_j^T(\vec{x})\}} $$
-where $\alpha_j=\beta_j^T=0$ and x is a vector.
-
-```{r ,echo=F}
-x <- seq(0,6.5,0.0001)
-y <- c(dgamma(x,7.5,1))
-z <- c(dgamma(x,7.8,1))
-xd=x[length(x):1]
-w <- c(dgamma(xd,7.5,1))
-plot(x, y, type="l",col="green",xaxt="n",yaxt="n",xlab = "x_i",ylab ="pi_j(x)")
-lines(x,z,type="l",col="red")
-lines(x,w,type="l",col="blue")
-legend(5.5,0.12,legend=c("J=2","J=1","J=3"),col=c("green","red","blue"),lty=1, cex=0.8)
-```
-
-Here we hold all $X_j$ constant, and calculate the probabilities across a range of X.
-
-##How is this a multivariate GLM?
-
-For a response vector:
-
-$$\vec{y_i}=  \left[ {\begin{array}{c} y_{i1}\\y_{i2}\\\vdots\\y_{ij}\end{array} } \right] \ ,\ observations \ for\  subject \ i$$
-
-$y_{ij}$ are the number of occurrences in each j category with covariate profile $i^{th}$ observation if you have a data set with only categorical X's
-
-
-$$\mu_j= \left[ {\begin{array}{c} \pi_1(x_i)\\\pi_2(x_i)\\\vdots\\\pi_{J-2}(x_i)\end{array} } \right]$$
-
-with a vector $g(\mu_i)=X_i\beta^T \, \ where\ g(\mu_i)\ has\ dimensions \ ((J-1)\times1), \ X_i \ has\ dimensions\ (J-1)\times(p(J-1)),\  \\and\  \beta\ has\ dimensions\ (p(J-1))\times1\ ...$
-
-$$g_i(\mu_i)=log\frac{\mu_i}{1-\sum_{h=1}^{J-1}\mu_{ih}}$$
-
-For some given individual assume we have:
-
-$$X_i=\left[ {\begin{array}{ccccccc} 1 &x_i^T &0&0&\dots&0 \\0&1&x_i^T&0&\dots&0\\\vdots& & & \ddots& &\vdots\\0&0&\dots&&\ddots&\\0&0&0&\dots&1&x_i^T\end{array} } \right]\,\beta^T=\left[ {\begin{array}{c} \alpha_1\\\beta_1\\\alpha_2\\\beta_2\\\vdots\\\alpha_{J-1}\\\beta_{J-1}\end{array} } \right]$$
-
-#Example 
+$$
+\begin{aligned}
+&log(\lambda) = \beta_0 + \beta_1X_1 + \beta_2X_2\\
+& \lambda = e^{\beta_0}e^{\beta_1X_1}e^{\beta_2X_2}
+\end{aligned}
+$$
+ - Relative risk is the interpretation for $e^{\beta}$  
  
---Information gathered on patients with certain symptoms through surveys given in clinical evaluations i.e age, do they have a fever, temp, rash present etc., hoping that answers to survey questions can be used to diagnose someone based on their symptoms, using a model to classify which disease you may have.
+$$
+\begin{aligned}
+log(\lambda_i |X_1 = k+1, X_2 = c) = \beta_0 + \beta_1(k+1) + \beta_2(c) \\
+- log(\lambda_i | X_1 = k, X_2 = c) = \beta_0 + \beta_1(k) + \beta_2(c) \\
+log((\lambda_i |X_1 = k+1, X_2 = c) / \lambda_i |X_1 = k+1, X_2 = c) = \beta_1
+\end{aligned}
+$$
+  
 
-* could be used to avoid doing expensive tests on patients
-* $Y_{ij}$= diagnosis of $i^{th}$ individual with $j^{th}$ disease:
-$$=\left[ {\begin{array}{cc} 1&if\ person\ has\ disease\\0&otherwise\end{array} } \right]$$
+Exposure / Offset Term
+========================================================
 
-* This ignores possibilties of coieinfection, meaning you are sick with 2 pathogens
+Often Poisson models have an 'exposure' or 'offset' term, representing a demoninator of some kind. Examples: Let $u_i$ be offset for $Y_i$...  
 
---The response vector would look like:
+ - Disease incidence: $Y_i$ = the number of cases of flu in a population in 1 year (in location i), $u_i$ = population size  
 
-$$y_i=\left[ {\begin{array}{c} 0\\0\\1\\0\\0\end{array} } \right]$$
+ - Accident rates: $Y_i$ = the number of traffic accidents at site i in 1 day, $u_i$ = average number of vehicles travelling through site i in 1 day, or $u_i$ = the number of vehicles through site i yesterday  
 
-
-Where the sum will always be 1 and the row with the 1 indciated which diease they have
-
-
---The motive here is the fact that clinical tests are expensive and time consuming, here we can model and accurately precet or classift indivudals based on sympotons or other easily ascceibke covaeriate such as:
-
-* Age (centered at mean), Heachace (Y/N), Rash (Y/N), Stomach Ache (Y/N), Month (categorical), etc.
-
-* Outcomes: D = Dengue fever, Z = Zika, C = Chikingunnya, F = Flu, O = Other
-
-* we have an aggregated data set
-
-$${\begin{array}{cccccc}i & j & y_{ij} & n_1 & X_{h,i} & X_{r,i} \\\hline1 & D & 10 & 50 & 1 & 0 \\1 & Z & 30 & 50 & 1 & 0 \\1 & C & 5 & 50 & 1 & 0 \\1 & F & 0 & 50 & 1 & 0 \\1 & O & 5 & 50 & 1 & 0\end{array} }$$
+ - The offset is used to scale the $Y_i$
 
 
-From this table, there were 50 people in the group with i covariate profiles, i.e. 30/50 people with covariate i have zika. Moreover, this group of people had headches but did not have rashes.
+Exposure / Offset Term
+========================================================
 
-$$y_i\sim multinational(n_i,\{\pi_i(x)\})$$
+$$
+\begin{aligned}
+Y_i \sim Poisson(u_i * \lambda_i) \\
+E(Y_i) = u_i *  \lambda_i \\
+log(E(Y_i)) = log(u_i) + log(\lambda_i)
+\end{aligned}
+$$
 
-##Model
+- $log(u_i)$ is our offset (from observed data, can be thought of as an intercept)
+- log($\lambda_i$) is our $\eta_i$ (the linear predictor)
 
---Let J = "other"
 
-$$log\frac{\pi_j(x_i)}{\pi_J(x_j)}=\alpha_i+\beta_j^A(age_i)+\beta_j^H(headache_i)+\beta_j^R(rash_i)...$$
+Exposure / Offset Term
+========================================================
 
-$${\begin{array}{c|cccc} & Dengue & Zika & Flu & \dots \\\hline\alpha & 0.1 & 2.6 & \dots & \dots \\Age,\ \beta^A & 0.1 & -.2 & \dots & \dots \\Headache,\  \beta^H & 1.5 & 1.4 & \dots & \dots \\Rash,\  \beta^R & 1.6 & .1 & \dots & \dots \\\vdots & \vdots & \vdots & \vdots & \ddots\end{array} } $$
+- In R, the Poisson glm can be specified with an offset
+- glm(Y $\sim X_1 + X_2$, family = 'poison', offset = log(u), data ...)
+- the log is important in order to get the correct offset
+- The offset term is adding more information to the model but not estimating a coefficient
 
-What is 
-$\alpha_{zika}\ or\ e^z\ ...\ \alpha_{j=z}?$
 
-$$log\frac{\pi_{Z}(x)}{\pi_{D}(x)}=\alpha_z+X\beta_z\ \ ,\ log\frac{\pi_{Z}(x=0)}{\pi_{O}(x=0)}=\alpha_z$$
+Exposure / Offset Term
+========================================================
 
---$e^{\alpha_z}$ is the realative risk in sample of having Zika vs other infection for baseline covariate profile i.e. no symptoms and average aged individual (important to note interpretability depends on sampling scheme).
+$$
+\begin{aligned}
+Y_i \sim Poisson(u_i * \lambda_i)
+\end{aligned}
+$$
 
---What does $\beta_{D}^{R}=1.6\ or\ e^{\beta_D^R}=4.5$ mean?
+- The $Y_i$ could be cases per day
+- $u_i$ could be population (persons)
+- then $\lambda_i$ would be cases per day per population (persons)
+- which makes this a rate for an individual
 
-* Holding everything but rash constant, having a rash is associatd with a 4.5 times incresed risk of Dengue compared to other.
+$$
+\begin{aligned}
+log(E(Y_i)) - log(u_i) = log(\lambda_i) \\
+log(E(Y_i)/ u_i) = log(\lambda_i)
+\end{aligned}
+$$
 
-$$log\frac{(\frac{\pi_{D}(R=1)}{\pi_{D}(R=1)})}{(\frac{\pi_{O}(R=0)}{\pi_{O}(R=0)})}=\beta^R_D\ \ $$
 
---We know the comparision for any $log\frac{\pi_a(x)}{\pi_b(x)}=log\frac{\pi_a(x)}{\pi_J(x)}-log\frac{\pi_b(x)}{\pi_J(x)}$
+Overdispersion
+========================================================
+
+- In Poisson models for $Y_i \sim Poisson(\lambda_i)$
+$$
+\begin{aligned}
+Var(Y_i) = \lambda_i
+\end{aligned}
+$$
+
+- In GLM estimation notation
+
+$$
+\begin{aligned}
+\mu_i = E(\lambda_i) \\
+Var(\mu_i) = \lambda_i
+\end{aligned}
+$$
+
+- In an overdispersed model, the variance is higher because of some variability not captured by Poisson
+
+$$
+\begin{aligned}
+Var(\mu_i) = \phi\lambda_i  \\ \phi > 0 
+\end{aligned}
+$$
+- Overdispersion implies $\phi>1$
+
+Overdispersion
+========================================================
+
+- Likelihood equations for Poisson GLM  
+
+$$
+\begin{aligned}
+\sum_{i=1}^{N} \frac{(y_i - u_i)x_{ij}}{Var(\mu_i)} \frac{\partial\mu_i}{\partial\eta_i} = 0 \\
+j = 0, ..,p
+\end{aligned}
+$$
+
+- Depends on the distribution of Y through $\mu_i$ and Var($\mu$)
+
+- $\phi$ drops out of the likelihood equations - this makes sense; variability won't affect the MLE - that is, $\beta$s are identical for models with $\phi$ > 1 and $\phi$ = 1
+- However, $\phi$ does impact estimated standard errors
+
+
+Overdispersion
+========================================================
+
+
+$$
+\begin{aligned}
+w_i = (\frac{\partial u_i}{\partial \eta_i})^2 / Var(Y_i) \\
+cov(\hat{\beta}) = (X^TWX)^{-1} = \phi cov(\hat{\beta})
+\end{aligned}
+$$
+
+- $\phi$ does not affect the $\beta$s but it does affect their covariance as a scaling factor 
+
+
+Is Overdispersion Term Needed in a Model?
+========================================================
+
+- (See example 4.7.4 in Agresti)
+- Start with standardized residuals
+- Assume:  
+$$
+\begin{aligned}
+z_i = \frac{y_i - \hat{y_i}}{\sqrt{Var(\hat{y_i})}} \\
+= \frac{y_i - \mu_i}{\sqrt{\mu_i}} \sim N(0,1) \\
+\sum_{i =1}^n z_i^2 \sim \chi^2_{n-k}
+\end{aligned}
+$$
+  
+- where k is the number of parameters  
+- if the sum of $z_i^2$ is large (compare to chi-squared), we may need an overdispersion term $\phi$ 
+
+
+Is Overdispersion Term Needed in a Model?
+========================================================
+
+$$
+\begin{aligned}
+\hat{\phi} = \frac{\sum_{i=1}^n z_i^2}{n-k}
+\end{aligned}
+$$
+
+- summarizes overdispersion in data compared to the fitted model
+
+- if $\phi^2$ > 1, we should use the "quasipoisson" family in R's glm() function  
+
+- The SEs of a quasipoisson model are equivalent to the SEs of the Poisson model miultiplied by $\sqrt{\hat{\phi}}$ 
+
+$$
+\begin{aligned}
+SE_{qp}(\hat{\beta}) = SE_p(\hat{\beta})*\sqrt{\hat{\phi}}
+\end{aligned}
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

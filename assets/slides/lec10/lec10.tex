@@ -1,0 +1,441 @@
+\documentclass[ignorenonframetext,]{beamer}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\newif\ifbibliography
+\hypersetup{
+            pdftitle={Lecture 10: GLMs: Poisson Regression, Overdispersion},
+            pdfauthor={Nick Reich / Transcribed by Daveed Goldenberg, edited by Josh Nugent},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \let\insertsectionnumber\relax
+    \let\sectionname\relax
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \let\insertsubsectionnumber\relax
+  \let\subsectionname\relax
+  \frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+%       ************************************************
+%       **        LaTeX preamble to be used with all 
+%	**        statsTeachR labs/handouts.
+%
+%	Author: Nicholas G Reich
+%	Last modified: July 2017
+%	************************************************
+
+%\documentclass[table]{beamer}
+
+%	Set theme (a nice plain one)
+\usetheme{Malmoe}
+
+%	Use named colors, set main color of theme
+%		to match Web site color:
+\definecolor{MainColor}{RGB}{10, 74, 109}
+\colorlet{MainColorMedium}{MainColor!50}
+\colorlet{MainColorLight}{MainColor!20}
+\usecolortheme[named=MainColor]{structure} 
+
+%	For tables
+%[dvipsnames] [table]
+\usepackage{xcolor}
+
+%% calling tabu.sty, assuming a particular directory structure
+\usepackage{../../slide-includes/tabu}	% Even fancier than tabulary
+\usepackage{multirow}
+
+%	Just for the degree symbol
+\usepackage{textcomp}
+
+%	Get rid of footline (page, author, etc. on each slide)
+\setbeamertemplate{footline}{}
+%	Get rid of navigation buttons
+\setbeamertemplate{navigation symbols}{}
+
+%	Make footnotes not ugly
+\usepackage{hanging}
+\setbeamertemplate{footnote}{\raggedright\hangpara{1em}{1}\makebox[1em][l]{\insertfootnotemark}\footnotesize\insertfootnotetext\par}
+
+%	Text style for code snippets inline in text:
+\newcommand{\codeInline}[1]{\texttt{#1}}
+
+%	Text style for emphasis stronger than \emph:
+%		(Note, this doesn't toggle the way \emph does.
+%			(Note, this can be done, didn't seem worth the trouble.))
+\newcommand{\strong}[1]{{\bfseries{#1}}}
+
+
+%        ******	Define title page	**********************
+\setbeamertemplate{title page}{
+	{\color{MainColor}
+	% There must be a better way than this -vspace at
+	%	 the top and bottom of the page to reduce the 
+	%	 bottom margin, but I can't find one that works.
+	%\vspace{-6em}
+
+% 	% Go to a lot of trouble to get the title in a
+% 	%	nice box, since customizing a beamer block
+% 	%	does not entirely work here (I don't know why)
+	\newlength{\titleBoxWidth}
+	\setlength{\titleBoxWidth}{\textwidth}
+	\addtolength{\titleBoxWidth}{-2.0em}
+	\setlength{\fboxsep}{1.0em}
+	\setlength{\fboxrule}{0pt}
+	\fcolorbox{MainColor!25}{MainColor!25}{
+		\parbox{\titleBoxWidth}{
+			\raggedright
+			\LARGE\textbf{\inserttitle}
+		}	% end parbox
+	}	% end fcolorbox
+
+	\vfill
+	\small{Author: \insertauthor}
+	\vspace{\baselineskip}
+
+	\small{Course: \underline{\href{http://nickreich.github.io/cda}{Categorical Data Analysis}} (BIOSTATS 743)}
+
+%	\small{\Instructor}
+%	\vspace{\baselineskip}
+
+%	\small{\emph{This material is part of the \strong{statsTeachR} project}}
+
+	\vfill
+	
+	\tiny{\emph{Made available under the \underline{\href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons Attribution-ShareAlike 4.0 International License}.}} \hfill \includegraphics[height=1em]{../../slide-includes/by-sa-compact.png}
+ }
+
+
+		\vspace{-15em}
+
+	}	% end color
+	\clearpage
+}	% end define title page
+
+\input{../../slide-includes/shortcuts}
+
+\hypersetup{colorlinks,linkcolor=,urlcolor=MainColor}
+
+\title{Lecture 10: GLMs: Poisson Regression, Overdispersion}
+\author{Nick Reich / Transcribed by Daveed Goldenberg, edited by Josh Nugent}
+\date{}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Poisson GLMs}
+
+\begin{itemize}
+\tightlist
+\item
+  Imagine you have count data following the Poisson distribution: \[
+  Y_i \sim Poisson(\lambda_i)
+  \]
+\item
+  \(Y_i\) is the total count in the time interval, \(\lambda_i\) is
+  \(E(Y_i)\), that is, the risk/rate of occurrence in some time
+  interval,\\
+\item
+  We use a log link for our GLM:
+\end{itemize}
+
+\[
+\eta_i = X_i\beta=\log{\lambda_i}=g(\lambda_i)=g(E[y_i])
+\]
+
+\end{frame}
+
+\begin{frame}{Poisson GLMs}
+
+\begin{itemize}
+\tightlist
+\item
+  Key Points:
+\item
+  Log link implies multiplicative effect of covariates
+\end{itemize}
+
+\[
+\begin{aligned}
+&log(\lambda) = \beta_0 + \beta_1X_1 + \beta_2X_2\\
+& \lambda = e^{\beta_0}e^{\beta_1X_1}e^{\beta_2X_2}
+\end{aligned}
+\] - Relative risk is the interpretation for \(e^{\beta}\)
+
+\[
+\begin{aligned}
+log(\lambda_i |X_1 = k+1, X_2 = c) = \beta_0 + \beta_1(k+1) + \beta_2(c) \\
+- log(\lambda_i | X_1 = k, X_2 = c) = \beta_0 + \beta_1(k) + \beta_2(c) \\
+log((\lambda_i |X_1 = k+1, X_2 = c) / \lambda_i |X_1 = k+1, X_2 = c) = \beta_1
+\end{aligned}
+\]
+
+\end{frame}
+
+\begin{frame}{Exposure / Offset Term}
+
+Often Poisson models have an `exposure' or `offset' term, representing a
+demoninator of some kind. Examples: Let \(u_i\) be offset for
+\(Y_i\)\ldots{}
+
+\begin{itemize}
+\item
+  Disease incidence: \(Y_i\) = the number of cases of flu in a
+  population in 1 year (in location i), \(u_i\) = population size
+\item
+  Accident rates: \(Y_i\) = the number of traffic accidents at site i in
+  1 day, \(u_i\) = average number of vehicles travelling through site i
+  in 1 day, or \(u_i\) = the number of vehicles through site i yesterday
+\item
+  The offset is used to scale the \(Y_i\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Exposure / Offset Term}
+
+\[
+\begin{aligned}
+Y_i \sim Poisson(u_i * \lambda_i) \\
+E(Y_i) = u_i *  \lambda_i \\
+log(E(Y_i)) = log(u_i) + log(\lambda_i)
+\end{aligned}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(log(u_i)\) is our offset (from observed data, can be thought of as
+  an intercept)
+\item
+  log(\(\lambda_i\)) is our \(\eta_i\) (the linear predictor)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Exposure / Offset Term}
+
+\begin{itemize}
+\tightlist
+\item
+  In R, the Poisson glm can be specified with an offset
+\item
+  glm(Y \(\sim X_1 + X_2\), family = `poison', offset = log(u), data
+  \ldots{})
+\item
+  the log is important in order to get the correct offset
+\item
+  The offset term is adding more information to the model but not
+  estimating a coefficient
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Exposure / Offset Term}
+
+\[
+\begin{aligned}
+Y_i \sim Poisson(u_i * \lambda_i)
+\end{aligned}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  The \(Y_i\) could be cases per day
+\item
+  \(u_i\) could be population (persons)
+\item
+  then \(\lambda_i\) would be cases per day per population (persons)
+\item
+  which makes this a rate for an individual
+\end{itemize}
+
+\[
+\begin{aligned}
+log(E(Y_i)) - log(u_i) = log(\lambda_i) \\
+log(E(Y_i)/ u_i) = log(\lambda_i)
+\end{aligned}
+\]
+
+\end{frame}
+
+\begin{frame}{Overdispersion}
+
+\begin{itemize}
+\item
+  In Poisson models for \(Y_i \sim Poisson(\lambda_i)\) \[
+  \begin{aligned}
+  Var(Y_i) = \lambda_i
+  \end{aligned}
+  \]
+\item
+  In GLM estimation notation
+\end{itemize}
+
+\[
+\begin{aligned}
+\mu_i = E(\lambda_i) \\
+Var(\mu_i) = \lambda_i
+\end{aligned}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  In an overdispersed model, the variance is higher because of some
+  variability not captured by Poisson
+\end{itemize}
+
+\[
+\begin{aligned}
+Var(\mu_i) = \phi\lambda_i  \\ \phi > 0 
+\end{aligned}
+\] - Overdispersion implies \(\phi>1\)
+
+\end{frame}
+
+\begin{frame}{Overdispersion}
+
+\begin{itemize}
+\tightlist
+\item
+  Likelihood equations for Poisson GLM
+\end{itemize}
+
+\[
+\begin{aligned}
+\sum_{i=1}^{N} \frac{(y_i - u_i)x_{ij}}{Var(\mu_i)} \frac{\partial\mu_i}{\partial\eta_i} = 0 \\
+j = 0, ..,p
+\end{aligned}
+\]
+
+\begin{itemize}
+\item
+  Depends on the distribution of Y through \(\mu_i\) and Var(\(\mu\))
+\item
+  \(\phi\) drops out of the likelihood equations - this makes sense;
+  variability won't affect the MLE - that is, \(\beta\)s are identical
+  for models with \(\phi\) \textgreater{} 1 and \(\phi\) = 1
+\item
+  However, \(\phi\) does impact estimated standard errors
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Overdispersion}
+
+\[
+\begin{aligned}
+w_i = (\frac{\partial u_i}{\partial \eta_i})^2 / Var(Y_i) \\
+cov(\hat{\beta}) = (X^TWX)^{-1} = \phi cov(\hat{\beta})
+\end{aligned}
+\]
+
+\begin{itemize}
+\tightlist
+\item
+  \(\phi\) does not affect the \(\beta\)s but it does affect their
+  covariance as a scaling factor
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Is Overdispersion Term Needed in a Model?}
+
+\begin{itemize}
+\item
+  (See example 4.7.4 in Agresti)
+\item
+  Start with standardized residuals
+\item
+  Assume:\\
+  \[
+  \begin{aligned}
+  z_i = \frac{y_i - \hat{y_i}}{\sqrt{Var(\hat{y_i})}} \\
+  = \frac{y_i - \mu_i}{\sqrt{\mu_i}} \sim N(0,1) \\
+  \sum_{i =1}^n z_i^2 \sim \chi^2_{n-k}
+  \end{aligned}
+  \]
+\item
+  where k is the number of parameters\\
+\item
+  if the sum of \(z_i^2\) is large (compare to chi-squared), we may need
+  an overdispersion term \(\phi\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Is Overdispersion Term Needed in a Model?}
+
+\[
+\begin{aligned}
+\hat{\phi} = \frac{\sum_{i=1}^n z_i^2}{n-k}
+\end{aligned}
+\]
+
+\begin{itemize}
+\item
+  summarizes overdispersion in data compared to the fitted model
+\item
+  if \(\phi^2\) \textgreater{} 1, we should use the ``quasipoisson''
+  family in R's glm() function
+\item
+  The SEs of a quasipoisson model are equivalent to the SEs of the
+  Poisson model miultiplied by \(\sqrt{\hat{\phi}}\)
+\end{itemize}
+
+\[
+\begin{aligned}
+SE_{qp}(\hat{\beta}) = SE_p(\hat{\beta})*\sqrt{\hat{\phi}}
+\end{aligned}
+\]
+
+\end{frame}
+
+\end{document}
