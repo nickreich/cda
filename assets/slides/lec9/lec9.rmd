@@ -186,7 +186,7 @@ $$
 Note the following relationship:
 
 $$ 
-\log\left(\frac{\pi_j(\vec{x_i})}{\pi_J(\vec{x_i})}\right) = \mathbf{X_i}\pmb{\beta} \implies \pi_j(\vec{x_i}) = \frac{\exp(\mathbf{X_i}\pmb{\beta_j})}{1 + \sum_{n=1}^{j-1}\exp(\mathbf{X_i}\pmb{\beta_n})}
+\log\left(\frac{\pi_j(\vec{x_i})}{\pi_J(\vec{x_i})}\right) = \mathbf{X_i}\pmb{\beta} \implies \pi_j(\vec{x_i}) = \frac{\exp(\mathbf{X_i}\pmb{\beta_j})}{1 + \sum_{n=1}^{J-1}\exp(\mathbf{X_i}\pmb{\beta_n})}
 $$
 
 The argument of the log function here is sometimes referred to as the "relative risk" in the public health setting.
