@@ -11,7 +11,7 @@ last_high_rate = DHF incidence rate during the last high-dengue season (April to
 sus_pct = estimated susceptible percentage, see methods section for details https://www.pnas.org/doi/10.1073/pnas.1714457115#sec-3
 
 The following variables are measures of climatic variables averaged for a province/year over a time-period defined by the unit specified by *
-*_temp_grid = temperature based on grid-based estimates from National Oceanic and Atmospheric Administration (NOAA)
+*_temp_grid = temperature in Celsius based on grid-based estimates from National Oceanic and Atmospheric Administration (NOAA)
 *_rain_grid = rainfall based on grid-based estimates from NOAA
 *_humid_ncdc = humidity based on data from National Climatic Data Center (NCDC)
-*_temp_ncdc = temperature based on data from National Climatic Data Center (NCDC)
+*_temp_ncdc = temperature in Celsius based on data from National Climatic Data Center (NCDC)
