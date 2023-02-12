@@ -1,0 +1,17 @@
+Dengue dataset codebook
+
+pid = ID number uniquely identifying a province in Thailand, see more here https://en.wikipedia.org/wiki/List_of_FIPS_region_codes_(S%E2%80%93U)#TH:_Thailand
+year = year of observation
+obs = number of dengue hemhorragic fever (DHF) cases in that province-year
+population = total population of the province in the year in question
+population_density = number of people per unit (probably km^2, not sure)
+pre_season_rate = DHF incidence rate in the months of January, February, and March of the given year
+last_post_rate = DHF incidence rate during the low-dengue season (November of [year-1] to March of [year])
+last_high_rate = DHF incidence rate during the last high-dengue season (April to October of [year-1])
+sus_pct = estimated susceptible percentage, see methods section for details https://www.pnas.org/doi/10.1073/pnas.1714457115#sec-3
+
+The following variables are measures of climatic variables averaged for a province/year over a time-period defined by the unit specified by *
+*_temp_grid = temperature based on grid-based estimates from National Oceanic and Atmospheric Administration (NOAA)
+*_rain_grid = rainfall based on grid-based estimates from NOAA
+*_humid_ncdc = humidity based on data from National Climatic Data Center (NCDC)
+*_temp_ncdc = temperature based on data from National Climatic Data Center (NCDC)
