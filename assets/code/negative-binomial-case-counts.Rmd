@@ -119,6 +119,7 @@ plot(mod_nb, shade=TRUE)
 ```
 
 Note that the plots show a Q-Q plot for the assumed normal random effects and the component smooth functions for each of the predictors where a spline was used. For the smooth functions, the spline is shown on the scale of the linear predictor for a mean-centered version of the variable. According to [the `plot.gam()` documentation](https://www.rdocumentation.org/packages/mgcv/versions/1.8-41/topics/plot.gam)
+
 > the confidence bands are obtained as if every other term in the model was constrained to have average 0, (average taken over the covariate values), except for the smooth concerned.
 
 One possible interpretation of the pre-season rate curve is:
@@ -128,6 +129,7 @@ And for the impact of January temperature on subsequent DHF incidence:
 "The average January temperature appeared to have a non-linear association with subsequent DHF incidence. Controlling for other factors such as pre-season DHF incidence and prior season DHF incidence, higher average January temperature appeared to be associated with higher DHF incidence up until around 26 degrees Celsius. However, at temperatures above 26 C, higher temperatures appeared to be associated with a slight decrease in DHF incidence, holding other factors constant. The curvature is slight, but the spline term was significant, suggesting that the model fits better than one with just a linear term for temperature."
 
 The paper suggests a plausible biological explanation for the shape of such a curve:
+
 > Temperatures must be warm enough for Aedes mosquitoes to imbibe blood but cool enough for optimal survival of eggs
 
 We can also fit some reduced models to compare the models using AIC and BIC criteria. Note that we are following [a suggestion from StackExchange](https://stats.stackexchange.com/a/274632/138883) to compare GAM models fitted in using the same method, with a suggestion that "ML" (maximum likelihood) is best when comparing simple models. To do this, we refit the full model above using `method="ML"`.
