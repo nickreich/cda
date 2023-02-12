@@ -13,13 +13,13 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
 library(ggplot2)
 library(dplyr)
-library(tidyr)
+library(readr)
 theme_set(theme_minimal())
 ```
 
 ## Introduction
 
-This analysis is based on research that is [publicly available on GitHub](https://github.com/reichlab/annual-predictions-paper). The code and description have been adapted for this write-up. Here is are some expository excerpts from the paper:
+This analysis is based on research that is [publicly available on GitHub](https://github.com/reichlab/annual-predictions-paper), and was [published in PNAS in 2018](https://www.pnas.org/doi/10.1073/pnas.1714457115). The code and description have been adapted for this write-up. Here is are some expository excerpts from the paper:
 
 > Dengue, a mosquito-borne virus prevalent throughout the tropics and sub-tropics, infects an estimated 390 million people every year.
 While the majority of infections are mild or asymptomatic, the more severe forms of dengue infection -- dengue shock syndrome (DSS) and dengue hemorrhagic fever (DHF) -- can result in organ failure or death.
@@ -44,12 +44,20 @@ We aggregated these measures into monthly covariates for maximum, minimum, and m
 
 ## The data
 
-The dataset shown here and provided in this repository is the same one used in the analysis. Some columns have been removed for simplicity. Here, we split the dataset into a training dataset from 2000 through 2012 and a testing dataset from 2013 and 2014.
+The dataset shown here and provided in this repository is the same one used in the analysis. Some columns have been removed for simplicity. 
+
+The dataset is available as a [CSV file](https://github.com/nickreich/cda/blob/master/assets/code/dengue-data.csv). A [codebook for the data](https://github.com/nickreich/cda/blob/master/assets/code/dengue-data-codebook) is also available.
+
+In this analysis, we split the dataset into a training dataset from 2000 through 2012 and a testing dataset from 2013 and 2014.
 
 ```{r}
-dat <- read.csv("https://raw.githubusercontent.com/nickreich/cda/master/assets/code/dengue-data.csv")
-train_dat <- filter(dat, year<2013) ## all but 2013 and 2014
-test_dat <- filter(dat, year>=2013)
+dat <- read_csv("https://raw.githubusercontent.com/nickreich/cda/master/assets/code/dengue-data.csv")
+train_dat <- dat %>%
+  dplyr::filter(year<2013) %>% ## all but 2013 and 2014
+  mutate(pid = factor(pid)) ## pid needs to be a factor for random effects
+test_dat <- dat %>%
+  dplyr::filter(year>=2013) %>%
+  mutate(pid = factor(pid))
 str(train_dat)
 ```
 
