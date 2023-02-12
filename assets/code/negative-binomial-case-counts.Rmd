@@ -6,7 +6,7 @@ output:
   html_document:
     df_print: paged
 editor_options:
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r setup, warning=FALSE, message=FALSE}
@@ -98,7 +98,7 @@ $$     \alpha_i \sim \text{Normal}(\mu, \sigma^2) $$
 > We model the incidence ($Y_{i,t}$) for province $i$ in year $t$ as following a negative binomial distribution with the mean equal to the province population ($n_{i,t}$) times the incidence rate ($\lambda_{i,t}$) and a dispersion parameter $r$.
 After a log transformation, we model the mean of this distribution using an intercept ($\beta_0$), a random effect for each province ($\alpha_i$) and a cubic spline for each of $J$ covariates ($g_j(x_{j,i,t}|\boldsymbol{\theta})$).
 
-Let's fit a model and look at the results.
+Let's fit a model and look at the results. Note that we have followed [a suggestion from StackExchange](https://stats.stackexchange.com/a/274632/138883) to use the Restricted Maximum Likelihood (REML) method for fitting the model, and also have used the `select=TRUE` option to enforce a slightly more theoretically justified penalization approach. 
 ```{r}
 library(mgcv)
 fmla <- formula("obs ~ offset(log(population)) + 
@@ -106,7 +106,7 @@ fmla <- formula("obs ~ offset(log(population)) +
                 s(pre_season_rate, k = 3, m=2, bs = 'cr') +
                 s(Jan_temp_grid, k = 3, m=2, bs = 'cr') +
                 s(last_high_rate, k = 3, m=2, bs = 'cr')")
-mod_nb <- gam(fmla, data = train_dat, family = nb())
+mod_nb <- gam(fmla, data = train_dat, family = nb, select = TRUE, method = "REML")
 summary(mod_nb)
 ```
 
@@ -115,15 +115,32 @@ It also looks like all of our chosen covariates are "highly significant", but be
 
 ```{r}
 par(mfrow=c(2,2))
-plot(mod_nb)
+plot(mod_nb, shade=TRUE)
 ```
 
-We can also fit some reduced models to compare deviance:
+Note that the plots show a Q-Q plot for the assumed normal random effects and the component smooth functions for each of the predictors where a spline was used. For the smooth functions, the spline is shown on the scale of the linear predictor for a mean-centered version of the variable. According to [the `plot.gam()` documentation](https://www.rdocumentation.org/packages/mgcv/versions/1.8-41/topics/plot.gam)
+> the confidence bands are obtained as if every other term in the model was constrained to have average 0, (average taken over the covariate values), except for the smooth concerned.
+
+One possible interpretation of the pre-season rate curve is:
+"Controlling for other factors, pre-season DHF incidence showed a strong positive correlation with total season incidence in the training phase, although the effect appeared to plateau at higher pre-season rates."
+
+And for the impact of January temperature on subsequent DHF incidence: 
+"The average January temperature appeared to have a non-linear association with subsequent DHF incidence. Controlling for other factors such as pre-season DHF incidence and prior season DHF incidence, higher average January temperature appeared to be associated with higher DHF incidence up until around 26 degrees Celsius. However, at temperatures above 26 C, higher temperatures appeared to be associated with a slight decrease in DHF incidence, holding other factors constant. The curvature is slight, but the spline term was significant, suggesting that the model fits better than one with just a linear term for temperature."
+
+The paper suggests a plausible biological explanation for the shape of such a curve:
+> Temperatures must be warm enough for Aedes mosquitoes to imbibe blood but cool enough for optimal survival of eggs
+
+We can also fit some reduced models to compare the models using AIC and BIC criteria. Note that we are following [a suggestion from StackExchange](https://stats.stackexchange.com/a/274632/138883) to compare GAM models fitted in using the same method, with a suggestion that "ML" (maximum likelihood) is best when comparing simple models. To do this, we refit the full model above using `method="ML"`.
 ```{r}
-mod_ref <- gam(obs ~ offset(log(population))+1, data = train_dat, family = nb)
-mod_randint <- gam(obs ~ offset(log(population)) + s(pid, bs = 're'), data = train_dat, family = nb)
-anova(mod_ref, mod_randint, mod_nb)
+mod_ref <- gam(obs ~ offset(log(population))+1, data = train_dat, family = nb, method = "ML")
+mod_randint <- gam(obs ~ offset(log(population)) + s(pid, bs = 're'), data = train_dat, family = nb, select = TRUE, method = "ML")
+mod_nb_ML <- gam(fmla, data = train_dat, family = nb, method = "ML")
+mod_nb_ML <- gam(fmla, data = train_dat, family = nb, method = "ML")
+AIC(mod_ref, mod_randint, mod_nb_ML)
+BIC(mod_ref, mod_randint, mod_nb_ML)
 ```
+
+From the above tables, it appears that the full model with climate variables is preferred, as it has lower AIC and BIC values than either of the other models. Interestingly, the effective degrees of freedom are actually lower in the full model that has more model terms than just the random intercept model despite having more coefficients. 
 
 And here is a Poisson model for comparison. It's interesting to see how the Poisson model has quite a bit less uncertainty in the estimated relationships.
 
