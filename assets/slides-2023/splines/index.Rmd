@@ -1,0 +1,46 @@
+---
+title: "Poisson Regression and GLM diagnostics"
+author: "Nicholas G Reich"
+institute: "UMass Amherst Biostatistics"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    seal: false
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      ratio: '16:9'
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: inverse, left, middle 
+
+# Poisson regression and GLM diagnostics 
+
+.pull-left[
+Nicholas G Reich <br>
+Professor of Biostatistics<br>
+BIOSTATS 690P: Topics in Health Data Science<br>
+Spring 2023
+]
+<!--![umass logo](UMasslong.png)-->
+.pull-right[<img src="UMasslong.png" height="150"/>]
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#881C1C"
+)
+```
+
+```{r, echo=FALSE}
+library(tidyverse)
+theme_set(theme_bw())
+```
+
+---
+class: inverse, center, middle
+
+# GLM Recap
+
